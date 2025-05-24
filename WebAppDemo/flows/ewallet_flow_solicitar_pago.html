@@ -5,8 +5,28 @@
     <form>
         <div><label for="deudor_solicitud">Solicitar a (Nombre o Teléfono):</label><input type="text" id="deudor_solicitud" name="deudor_solicitud" placeholder="Ej: Carlos M. o +987654321" required></div>
         <div><label for="monto_solicitud">Monto:</label><input type="number" id="monto_solicitud" name="monto_solicitud" step="0.01" placeholder="Ej: 10.00" required></div>
-        <div><label for="moneda_solicitud">Moneda:</label><input type="text" id="moneda_solicitud" name="moneda_solicitud" placeholder="Ej: USD" value="USD"></div>
+        <div><label for="moneda_solicitud">Moneda:</label><input type="text" id="moneda_solicitud" name="moneda_solicitud" placeholder="Ej: USD"></div>
         <div><label for="concepto_solicitud">Concepto (opcional):</label><input type="text" id="concepto_solicitud" name="concepto_solicitud" placeholder="Ej: Cuota de pizza"></div>
-        <button type="button" onclick="alert('Simulación: Enviar solicitud de pago.')">Solicitar</button>
+        <button type="button" onclick="alert('Simulación: Enviar solicitud de pago.'); closeFlowWindow();">Solicitar</button>
     </form>
-</div></body></html>
+</div>
+<script>
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const deudor = params.get('deudor');
+        const monto = params.get('monto');
+        const moneda = params.get('moneda');
+        const concepto = params.get('concepto');
+
+        if (deudor) document.getElementById('deudor_solicitud').value = deudor;
+        if (monto) document.getElementById('monto_solicitud').value = parseFloat(monto);
+        if (moneda) document.getElementById('moneda_solicitud').value = moneda;
+        if (concepto) document.getElementById('concepto_solicitud').value = concepto;
+    });
+</script>
+</body></html>

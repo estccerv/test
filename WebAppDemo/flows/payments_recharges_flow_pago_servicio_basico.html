@@ -31,10 +31,40 @@
             <input type="number" id="monto_pago_servicio" name="monto_pago_servicio" step="0.01" placeholder="Dejar vacío si se consulta">
         </div>
         <div><label for="moneda_pago_servicio">Moneda:</label>
-            <input type="text" id="moneda_pago_servicio" name="moneda_pago_servicio" value="MXN">
+            <input type="text" id="moneda_pago_servicio" name="moneda_pago_servicio">
         </div>
-        <button type="button" onclick="alert('Simulación: Procesando pago de servicio.')">Pagar Servicio</button>
+        <button type="button" onclick="alert('Simulación: Procesando pago de servicio.'); closeFlowWindow();">Pagar Servicio</button>
     </form>
 </div>
+<script>
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const tipo_servicio_basico = params.get('tipo_servicio_basico');
+        const empresa_servicio = params.get('empresa_servicio');
+        const referencia_pago = params.get('referencia_pago');
+        const monto = params.get('monto');
+        const moneda = params.get('moneda');
+
+        if (tipo_servicio_basico) {
+            const tipoServicioSelect = document.getElementById('tipo_servicio_pago');
+            const optionExists = Array.from(tipoServicioSelect.options).some(opt => opt.value.toLowerCase() === tipo_servicio_basico.toLowerCase());
+            if (optionExists) {
+                tipoServicioSelect.value = tipo_servicio_basico.toLowerCase();
+            } else {
+                // Si no está en la lista, podríamos seleccionar 'otro' o dejarlo
+                console.warn('Tipo de servicio '+tipo_servicio_basico+' no en lista.');
+            }
+        }
+        if (empresa_servicio) document.getElementById('empresa_servicio_pago').value = empresa_servicio;
+        if (referencia_pago) document.getElementById('referencia_pago_servicio').value = referencia_pago;
+        if (monto) document.getElementById('monto_pago_servicio').value = parseFloat(monto);
+        if (moneda) document.getElementById('moneda_pago_servicio').value = moneda;
+    });
+</script>
 </body>
 </html>

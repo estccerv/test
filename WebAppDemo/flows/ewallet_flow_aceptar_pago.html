@@ -10,12 +10,24 @@
     </div>
     <form>
         <div><label for="pincode_aceptar">Pincode de Operación:</label><input type="password" id="pincode_aceptar" name="pincode_aceptar" pattern="\d{4,6}" required></div>
-        <button type="button" onclick="alert('Simulación: Pago confirmado y procesado.')">Confirmar y Pagar</button>
-        <button type="button" class="secondary" onclick="alert('Simulación: Pago cancelado.')">Cancelar</button>
+        <button type="button" onclick="alert('Simulación: Pago confirmado y procesado.'); closeFlowWindow();">Confirmar y Pagar</button>
+        <button type="button" class="secondary" onclick="alert('Simulación: Pago cancelado.'); closeFlowWindow();">Cancelar</button>
     </form>
 </div>
 <script>
-// En una implementación real, estos datos vendrían del mensaje que inicia el Flow.
-// document.getElementById('monto_aceptar').textContent = obtenerMontoDeContexto();
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    // En una implementación real, los datos (monto, beneficiario, concepto)
+    // se cargarían dinámicamente basados en el contexto de la transacción a aceptar.
+    // Para este demo, son estáticos en el HTML o podrían pasarse por URL si la NLU los capturara.
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        // Ejemplo si la NLU capturara algo como un ID de transacción para buscar los detalles
+        // const transactionId = params.get('transactionId');
+        // if (transactionId) { /* Lógica para cargar detalles de la transacción */ }
+    });
 </script>
 </body></html>

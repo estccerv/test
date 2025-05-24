@@ -3,9 +3,26 @@
 <div class="flow-container">
     <h2>🏦 Crear Nueva Cuenta de Billetera</h2>
     <form>
-        <div><label for="nombre">Nombre (opcional):</label><input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Perez"></div>
+        <div><label for="nombre_usuario">Nombre (opcional):</label><input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Ej: Juan Perez"></div>
         <div><label for="pincode">Define tu Pincode (4-6 dígitos):</label><input type="password" id="pincode" name="pincode" pattern="\d{4,6}" required placeholder="Ej: 1234"></div>
         <div><label for="confirm_pincode">Confirma tu Pincode:</label><input type="password" id="confirm_pincode" name="confirm_pincode" pattern="\d{4,6}" required placeholder="Repite el Pincode"></div>
-        <button type="button" onclick="alert('Simulación: Datos enviados para crear cuenta.')">Crear Cuenta</button>
+        <button type="button" onclick="alert('Simulación: Datos enviados para crear cuenta.'); closeFlowWindow();">Crear Cuenta</button>
     </form>
-</div></body></html>
+</div>
+<script>
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const nombre_usuario = params.get('nombre_usuario');
+        const pincode = params.get('pincode');
+
+        if (nombre_usuario) document.getElementById('nombre_usuario').value = nombre_usuario;
+        if (pincode) document.getElementById('pincode').value = pincode; 
+        // No pre-llenamos confirm_pincode por seguridad/lógica de UI
+    });
+</script>
+</body></html>

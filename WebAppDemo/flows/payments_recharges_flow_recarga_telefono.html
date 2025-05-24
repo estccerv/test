@@ -13,12 +13,12 @@
         <div><label for="operador_tel">Operador:</label>
             <select id="operador_tel" name="operador_tel" required>
                 <option value="">Selecciona operador</option>
-                <option value="telcel">Telcel</option>
-                <option value="movistar">Movistar</option>
-                <option value="att">AT&T</option>
-                <option value="claro">Claro</option>
-                <option value="tigo">Tigo</option>
-                <option value="otro">Otro</option>
+                <option value="Telcel">Telcel</option>
+                <option value="Movistar">Movistar</option>
+                <option value="AT&T">AT&T</option>
+                <option value="Claro">Claro</option>
+                <option value="Tigo">Tigo</option>
+                <option value="Otro">Otro</option> <!-- Importante si la NLU devuelve un valor no listado -->
             </select>
         </div>
         <div><label for="tipo_recarga_tel">Tipo de Recarga:</label>
@@ -36,16 +36,73 @@
             <input type="text" id="nombre_paquete_tel" name="nombre_paquete_tel" placeholder="Ej: Amigo Sin Límite 100">
         </div>
         <div><label for="moneda_tel">Moneda:</label><input type="text" id="moneda_tel" name="moneda_tel" value="MXN"></div>
-        <button type="button" onclick="alert('Simulación: Procesando recarga telefónica.')">Recargar / Comprar</button>
+        <button type="button" onclick="alert('Simulación: Procesando recarga telefónica.'); closeFlowWindow();">Recargar / Comprar</button>
     </form>
 </div>
 <script>
-function toggleMontoPaquete(tipo) {
-    document.getElementById('monto_tiempo_aire_div').style.display = (tipo === 'tiempo_aire') ? 'block' : 'none';
-    document.getElementById('nombre_paquete_div').style.display = (tipo === 'paquete') ? 'block' : 'none';
-}
-// Inicializar visibilidad
-toggleMontoPaquete(document.getElementById('tipo_recarga_tel').value);
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    function toggleMontoPaquete(tipo) {
+        const montoDiv = document.getElementById('monto_tiempo_aire_div');
+        const paqueteDiv = document.getElementById('nombre_paquete_div');
+        const montoInput = document.getElementById('monto_tel');
+        const paqueteInput = document.getElementById('nombre_paquete_tel');
+
+        if (tipo === 'tiempo_aire') {
+            montoDiv.style.display = 'block';
+            montoInput.required = true;
+            paqueteDiv.style.display = 'none';
+            paqueteInput.required = false;
+        } else if (tipo === 'paquete') {
+            montoDiv.style.display = 'none';
+            montoInput.required = false;
+            paqueteDiv.style.display = 'block';
+            paqueteInput.required = true;
+        } else {
+            montoDiv.style.display = 'block'; // Por defecto tiempo aire
+            montoInput.required = true;
+            paqueteDiv.style.display = 'none';
+            paqueteInput.required = false;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const numero_telefono = params.get('numero_telefono');
+        const operador_telefono = params.get('operador_telefono');
+        const monto = params.get('monto');
+        const nombre_paquete = params.get('nombre_paquete');
+        const moneda = params.get('moneda');
+        // La NLU podría darnos una pista sobre si es paquete o tiempo aire
+        const intencion = params.get('intencion'); // Suponiendo que app.js pasa la intención
+
+        if (numero_telefono) document.getElementById('numero_tel').value = numero_telefono;
+        if (operador_telefono) {
+            const operadorSelect = document.getElementById('operador_tel');
+            const optionExists = Array.from(operadorSelect.options).some(opt => opt.value === operador_telefono);
+            if (optionExists) {
+                operadorSelect.value = operador_telefono;
+            } else {
+                 // Si el operador no está en la lista, podríamos seleccionar 'Otro' o añadirlo dinámicamente
+                 // Por ahora, lo dejamos o se puede seleccionar 'Otro' si la lógica de NLU lo sugiere
+                console.warn('Operador '+operador_telefono+' no en lista. Selecciona manualmente o actualiza la lista.');
+            }
+        }
+        if (moneda) document.getElementById('moneda_tel').value = moneda;
+
+        const tipoRecargaSelect = document.getElementById('tipo_recarga_tel');
+        if (nombre_paquete || intencion === 'comprar_paquete_movil') {
+            tipoRecargaSelect.value = 'paquete';
+            if (nombre_paquete) document.getElementById('nombre_paquete_tel').value = nombre_paquete;
+        } else {
+            tipoRecargaSelect.value = 'tiempo_aire';
+            if (monto) document.getElementById('monto_tel').value = parseFloat(monto);
+        }
+        toggleMontoPaquete(tipoRecargaSelect.value); // Asegurar que se muestre el campo correcto
+    });
 </script>
 </body>
 </html>

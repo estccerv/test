@@ -1,11 +1,40 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><title>Flow: Ver Saldo</title><link rel="stylesheet" href="flow_style.css"></head><body>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Ver Saldo</title>
+    <link rel="stylesheet" href="flow_style.css">
+</head>
+<body>
 <div class="flow-container">
     <h2>💰 Tu Saldo Actual</h2>
     <div class="saldo-display">
         <p>Saldo Disponible:</p>
-        <h3 id="display_saldo">$1,250.75 USD</h3> 
-        <p><small>(Este es un saldo simulado)</small></p>
+        <h3 id="display_saldo_valor">Cargando...</h3> 
+        <p><small>(Este es tu saldo actual simulado)</small></p>
     </div>
-    <button type="button" onclick="alert('Simulación: Cerrar vista de saldo.')">Ok</button>
-</div></body></html>
+    <button type="button" onclick="closeFlowWindow();">Ok</button>
+</div>
+<script>
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const saldo = params.get('saldo');
+        const moneda = params.get('moneda');
+        const saldoDisplay = document.getElementById('display_saldo_valor');
+
+        if (saldo && moneda) {
+            saldoDisplay.textContent = `${parseFloat(saldo).toFixed(2)} ${moneda}`;
+        } else if (saldo) {
+            saldoDisplay.textContent = `${parseFloat(saldo).toFixed(2)} (Moneda no especificada)`;
+        } else {
+            saldoDisplay.textContent = "No disponible";
+        }
+    });
+</script>
+</body>
+</html>

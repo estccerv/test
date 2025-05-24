@@ -5,9 +5,29 @@
     <form>
         <div><label for="destinatario_transfer">Destinatario (Nombre o Teléfono):</label><input type="text" id="destinatario_transfer" name="destinatario_transfer" placeholder="Ej: Ana G. o +123456789" required></div>
         <div><label for="monto_transfer">Monto:</label><input type="number" id="monto_transfer" name="monto_transfer" step="0.01" placeholder="Ej: 15.50" required></div>
-        <div><label for="moneda_transfer">Moneda:</label><input type="text" id="moneda_transfer" name="moneda_transfer" placeholder="Ej: USD" value="USD"></div>
+        <div><label for="moneda_transfer">Moneda:</label><input type="text" id="moneda_transfer" name="moneda_transfer" placeholder="Ej: USD"></div>
         <div><label for="concepto_transfer">Concepto (opcional):</label><input type="text" id="concepto_transfer" name="concepto_transfer" placeholder="Ej: Regalo de cumpleaños"></div>
         <div><label for="pincode_transfer">Pincode de Operación:</label><input type="password" id="pincode_transfer" name="pincode_transfer" pattern="\d{4,6}" required></div>
-        <button type="button" onclick="alert('Simulación: Confirmar transferencia.')">Enviar Dinero</button>
+        <button type="button" onclick="alert('Simulación: Confirmar transferencia.'); closeFlowWindow();">Enviar Dinero</button>
     </form>
-</div></body></html>
+</div>
+<script>
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const destinatario = params.get('destinatario');
+        const monto = params.get('monto');
+        const moneda = params.get('moneda');
+        const concepto = params.get('concepto');
+
+        if (destinatario) document.getElementById('destinatario_transfer').value = destinatario;
+        if (monto) document.getElementById('monto_transfer').value = parseFloat(monto);
+        if (moneda) document.getElementById('moneda_transfer').value = moneda;
+        if (concepto) document.getElementById('concepto_transfer').value = concepto;
+    });
+</script>
+</body></html>

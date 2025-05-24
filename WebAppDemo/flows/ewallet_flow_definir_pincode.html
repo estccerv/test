@@ -6,6 +6,20 @@
         <div><label for="pincode_actual">Pincode Actual (si ya tienes uno):</label><input type="password" id="pincode_actual" name="pincode_actual" pattern="\d{4,6}"></div>
         <div><label for="nuevo_pincode">Nuevo Pincode (4-6 dígitos):</label><input type="password" id="nuevo_pincode" name="nuevo_pincode" pattern="\d{4,6}" required></div>
         <div><label for="confirm_nuevo_pincode">Confirma Nuevo Pincode:</label><input type="password" id="confirm_nuevo_pincode" name="confirm_nuevo_pincode" pattern="\d{4,6}" required></div>
-        <button type="button" onclick="alert('Simulación: Pincode actualizado.')">Guardar Pincode</button>
+        <button type="button" onclick="alert('Simulación: Pincode actualizado.'); closeFlowWindow();">Guardar Pincode</button>
     </form>
-</div></body></html>
+</div>
+<script>
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const pincode = params.get('pincode'); // Podría ser 'nuevo_pincode' según NLU
+
+        if (pincode) document.getElementById('nuevo_pincode').value = pincode;
+    });
+</script>
+</body></html>

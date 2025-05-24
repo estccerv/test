@@ -4,7 +4,7 @@
     <h2>➕ Cargar Saldo</h2>
     <form>
         <div><label for="monto_cargar">Monto a Cargar:</label><input type="number" id="monto_cargar" name="monto_cargar" step="0.01" placeholder="Ej: 50.00" required></div>
-        <div><label for="moneda_cargar">Moneda:</label><input type="text" id="moneda_cargar" name="moneda_cargar" placeholder="Ej: USD, COP" value="USD"></div>
+        <div><label for="moneda_cargar">Moneda:</label><input type="text" id="moneda_cargar" name="moneda_cargar" placeholder="Ej: USD, COP"></div>
         <div><label for="metodo_pago">Método de Pago (simulado):</label>
             <select id="metodo_pago" name="metodo_pago">
                 <option value="tarjeta_credito">Tarjeta de Crédito/Débito</option>
@@ -12,6 +12,22 @@
                 <option value="oxxo">OXXO (México)</option>
             </select>
         </div>
-        <button type="button" onclick="alert('Simulación: Proceder a la carga de saldo.')">Continuar</button>
+        <button type="button" onclick="alert('Simulación: Proceder a la carga de saldo.'); closeFlowWindow();">Continuar</button>
     </form>
-</div></body></html>
+</div>
+<script>
+    function closeFlowWindow() {
+        if (window.parent && typeof window.parent.closeFlow === 'function') {
+            window.parent.closeFlow();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const monto = params.get('monto');
+        const moneda = params.get('moneda');
+
+        if (monto) document.getElementById('monto_cargar').value = parseFloat(monto);
+        if (moneda) document.getElementById('moneda_cargar').value = moneda;
+    });
+</script>
+</body></html>
