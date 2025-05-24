@@ -1,0 +1,70 @@
+Analiza la siguiente solicitud de gasto para una aplicación de seguimiento de gastos por WhatsApp.
+
+Extrae los siguientes datos del texto del usuario:
+- Monto (solo el número, sin símbolos de moneda)
+- Moneda (si se menciona, por ejemplo "pesos", "USD", "EUR". Si no se menciona, intenta inferir o deja vacío si no es posible)
+- Categoría (si se menciona o es inferible de forma clara y común, por ejemplo "Comida", "Transporte", "Ocio", "Supermercado", "Servicios". Si no es claro, deja vacío o asigna "General")
+- Descripción (una descripción concisa del gasto, excluyendo palabras como "gasté", "pagué", "añade", "registra").
+- Fecha (si se menciona explícitamente, como "ayer", "hoy", "el martes pasado", "25 de diciembre". Si no se menciona, indica que se debe usar la fecha actual).
+
+Considera variaciones comunes y lenguaje coloquial.
+
+Formatea la respuesta estrictamente como un objeto JSON con las siguientes claves:
+"amount": number | null (si no se encuentra)
+"currency": string | null
+"category": string | null
+"description": string | null
+"date_reference": string (ej. "hoy", "ayer", "2024-12-25", "próximo martes", o "actual" si no se especifica)
+"error": string | null (si falta un dato crucial como el monto, o si la solicitud no parece ser un registro de gasto)
+
+Ejemplo de texto del usuario: "Ayer pagué 35000 pesos por la cena en el restaurante italiano"
+Salida JSON esperada:
+```json
+{
+  "amount": 35000,
+  "currency": "pesos",
+  "category": "Comida",
+  "description": "Cena en restaurante italiano",
+  "date_reference": "ayer",
+  "error": null
+}
+```
+
+Ejemplo de texto del usuario: "añade 15 de transporte"
+Salida JSON esperada:
+```json
+{
+  "amount": 15,
+  "currency": null, 
+  "category": "Transporte",
+  "description": "Transporte",
+  "date_reference": "actual",
+  "error": null
+}
+```
+
+Ejemplo de texto del usuario: "compré pan por 5"
+Salida JSON esperada:
+```json
+{
+  "amount": 5,
+  "currency": null,
+  "category": "Comida", 
+  "description": "Compré pan",
+  "date_reference": "actual",
+  "error": null
+}
+```
+
+Ejemplo de texto del usuario: "cuánto llevo en comida?"
+Salida JSON esperada:
+```json
+{
+  "amount": null,
+  "currency": null,
+  "category": null,
+  "description": null,
+  "date_reference": null,
+  "error": "No es una solicitud de registro de gasto."
+}
+```

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebApp Chat Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="api-key-setup" id="api-key-setup">
+        <h3>Configurar Clave API de Gemini</h3>
+        <p>Pega tu clave API de Google AI (Gemini) aquí para habilitar la NLU real.</p>
+        <p><strong>Advertencia:</strong> Esta clave solo se usará en tu navegador para este demo local. No subas esta página a un sitio público con una clave pegada.</p>
+        <input type="password" id="gemini-api-key-input" placeholder="Pega tu clave API de Gemini aquí">
+        <button onclick="setApiKeyAndStart()">Guardar Clave y Comenzar</button>
+        <p id="api-key-status" style="margin-top:10px; font-style: italic;"></p>
+    </div>
+
+    <div class="chat-app-container" id="chat-app-container" style="display:none;">
+        <div class="sidebar">
+            <h2>Mis Chats</h2>
+            <div class="agent-selector">
+                <button id="agent-gastos" onclick="selectAgent('gastos')">🤖 Bot de Gastos</button>
+                <button id="agent-billetera" onclick="selectAgent('billetera')">💳 Bot de Billetera</button>
+                <button id="agent-recargas-pagos" onclick="selectAgent('recargas_pagos')">🔌 Bot de Recargas y Pagos</button>
+            </div>
+             <div style="margin-top: 20px; padding: 10px; background: #f9f9f9; border-radius: 5px; font-size: 0.8em;">
+                <strong>Clave API actual:</strong> <span id="current-api-key-display">No configurada</span>
+            </div>
+        </div>
+        <div class="chat-window">
+            <div class="chat-header">
+                <div class="avatar" id="chat-avatar">B</div>
+                <div class="agent-name" id="chat-agent-name">Selecciona un Bot</div>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot"><p>Bienvenido. Por favor, selecciona un bot de la izquierda para comenzar.</p></div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Escribe un mensaje..." disabled>
+                <button id="send-button" onclick="sendMessage()" disabled>Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flow-display-container" id="flow-container">
+        <button class="close-flow-btn" onclick="closeFlow()">X</button>
+        <iframe id="flow-iframe" src="about:blank"></iframe>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

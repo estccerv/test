@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Flow: Transferir Dinero</title><link rel="stylesheet" href="../flow_style.css"></head><body>
+<div class="flow-container">
+    <h2>💸 Transferir Dinero</h2>
+    <form>
+        <div><label for="destinatario_transfer">Destinatario (Nombre o Teléfono):</label><input type="text" id="destinatario_transfer" name="destinatario_transfer" placeholder="Ej: Ana G. o +123456789" required></div>
+        <div><label for="monto_transfer">Monto:</label><input type="number" id="monto_transfer" name="monto_transfer" step="0.01" placeholder="Ej: 15.50" required></div>
+        <div><label for="moneda_transfer">Moneda:</label><input type="text" id="moneda_transfer" name="moneda_transfer" placeholder="Ej: USD" value="USD"></div>
+        <div><label for="concepto_transfer">Concepto (opcional):</label><input type="text" id="concepto_transfer" name="concepto_transfer" placeholder="Ej: Regalo de cumpleaños"></div>
+        <div><label for="pincode_transfer">Pincode de Operación:</label><input type="password" id="pincode_transfer" name="pincode_transfer" pattern="\d{4,6}" required></div>
+        <button type="button" onclick="alert('Simulación: Confirmar transferencia.')">Enviar Dinero</button>
+    </form>
+</div></body></html>

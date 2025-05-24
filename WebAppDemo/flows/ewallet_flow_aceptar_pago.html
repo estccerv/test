@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Flow: Aceptar Pago</title><link rel="stylesheet" href="flow_style.css"></head><body>
+<div class="flow-container">
+    <h2>👍 Confirmar Pago</h2>
+    <div class="payment-details">
+        <p>Estás a punto de pagar:</p>
+        <h3><span id="monto_aceptar">25.00</span> <span id="moneda_aceptar">USD</span></h3>
+        <p>A: <strong id="beneficiario_aceptar">Ana G.</strong></p>
+        <p>Concepto: <em id="concepto_aceptar">Almuerzo compartido</em></p>
+    </div>
+    <form>
+        <div><label for="pincode_aceptar">Pincode de Operación:</label><input type="password" id="pincode_aceptar" name="pincode_aceptar" pattern="\d{4,6}" required></div>
+        <button type="button" onclick="alert('Simulación: Pago confirmado y procesado.')">Confirmar y Pagar</button>
+        <button type="button" class="secondary" onclick="alert('Simulación: Pago cancelado.')">Cancelar</button>
+    </form>
+</div>
+<script>
+// En una implementación real, estos datos vendrían del mensaje que inicia el Flow.
+// document.getElementById('monto_aceptar').textContent = obtenerMontoDeContexto();
+</script>
+</body></html>

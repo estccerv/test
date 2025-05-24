@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Flow - Registrar Gasto</title>
+    <link rel="stylesheet" href="flow_style.css">
+</head>
+<body>
+    <div class="flow-container">
+        <h2>💸 Registrar Nuevo Gasto</h2>
+        <form id="expenseForm">
+            <div>
+                <label for="amount">Monto:</label>
+                <input type="number" id="amount" name="amount" placeholder="Ej: 500.50" required>
+            </div>
+            <div>
+                <label for="category">Categoría:</label>
+                <select id="category" name="category" required>
+                    <option value="comida">Comida 🍔</option>
+                    <option value="transporte">Transporte 🚗</option>
+                    <option value="ocio">Ocio 🎉</option>
+                    <option value="hogar">Hogar 🏠</option>
+                    <option value="salud">Salud ⚕️</option>
+                    <option value="otro">Otra 📎</option>
+                </select>
+            </div>
+            <div>
+                <label for="description">Descripción (opcional):</label>
+                <input type="text" id="description" name="description">
+            </div>
+            <div>
+                <label for="date">Fecha (opcional, hoy por defecto):</label>
+                <input type="date" id="date" name="date">
+            </div>
+            <button type="button" onclick="alert('Simulación: Datos enviados para registrar gasto.')">Guardar Gasto</button>
+        </form>
+    </div>
+</body>
+</html>

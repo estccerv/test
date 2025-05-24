@@ -1,0 +1,12 @@
+{
+  "name": "ewallet-preview-testing",
+  "version": "1.0.0",
+  "description": "Local NLU testing for e-wallet chat app demo",
+  "main": "ewallet_test_nlu_local.js",
+  "scripts": {
+    "test-nlu": "node ewallet_test_nlu_local.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.17.0" 
+  }
+}

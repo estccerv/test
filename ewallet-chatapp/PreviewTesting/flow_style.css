@@ -1,0 +1,92 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #E5DDD5; /* WhatsApp-like chat background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.flow-container {
+    background-color: #FFFFFF; /* White bubble for the flow */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    width: 100%;
+    max-width: 420px; /* Typical width for mobile UIs */
+}
+h2 {
+    color: #075E54; /* WhatsApp dark green */
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.3em;
+}
+label {
+    display: block;
+    margin-bottom: 6px;
+    color: #333333;
+    font-size: 0.9em;
+}
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="date"],
+select {
+    width: calc(100% - 20px); /* Account for padding */
+    padding: 10px;
+    margin-bottom: 18px;
+    border: 1px solid #D0D0D0;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+button {
+    background-color: #25D366; /* WhatsApp primary button green */
+    color: white;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 20px; /* More rounded buttons */
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+}
+button:hover {
+    background-color: #128C7E; /* Darker green on hover */
+}
+button.secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+button.secondary:hover {
+    background-color: #c7c7c7;
+}
+.saldo-display {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.saldo-display p {
+    margin: 5px 0;
+    color: #555;
+}
+.saldo-display h3 {
+    margin: 5px 0 10px 0;
+    font-size: 2em;
+    color: #075E54;
+}
+.payment-details p {
+    margin: 8px 0;
+    font-size: 1em;
+}
+.payment-details strong {
+    color: #333;
+}
+.payment-details em {
+    color: #555;
+}

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Flow: Definir Pincode</title><link rel="stylesheet" href="../flow_style.css"></head><body>
+<div class="flow-container">
+    <h2>🔑 Definir Pincode</h2>
+    <form>
+        <div><label for="pincode_actual">Pincode Actual (si ya tienes uno):</label><input type="password" id="pincode_actual" name="pincode_actual" pattern="\d{4,6}"></div>
+        <div><label for="nuevo_pincode">Nuevo Pincode (4-6 dígitos):</label><input type="password" id="nuevo_pincode" name="nuevo_pincode" pattern="\d{4,6}" required></div>
+        <div><label for="confirm_nuevo_pincode">Confirma Nuevo Pincode:</label><input type="password" id="confirm_nuevo_pincode" name="confirm_nuevo_pincode" pattern="\d{4,6}" required></div>
+        <button type="button" onclick="alert('Simulación: Pincode actualizado.')">Guardar Pincode</button>
+    </form>
+</div></body></html>

@@ -1,0 +1,211 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #d1d7db; /* Un fondo grisáceo como WhatsApp Web */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.chat-app-container {
+    width: 95%;
+    max-width: 1000px; /* Ancho máximo para la app */
+    height: 95vh;
+    max-height: 800px; /* Alto máximo */
+    display: flex;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #f0f2f5;
+}
+
+.sidebar {
+    width: 30%;
+    background-color: #f0f2f5; /* Color de fondo de la barra lateral */
+    border-right: 1px solid #d1d7db;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.sidebar h2 {
+    font-size: 1.2em;
+    color: #1f2c33;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.agent-selector button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #00a884; /* Verde de WhatsApp */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.95em;
+    text-align: left;
+}
+
+.agent-selector button:hover {
+    background-color: #008069;
+}
+
+.agent-selector button.active {
+    background-color: #005c4b; /* Verde más oscuro para activo */
+}
+
+.chat-window {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    background-color: #e5ddd5; /* Fondo de chat de WhatsApp con textura (simulado) */
+    /* background-image: url('whatsapp_background.png'); /* Si tuvieras una textura */
+}
+
+.chat-header {
+    background-color: #f0f2f5; /* Color de cabecera de chat */
+    padding: 10px 20px;
+    border-bottom: 1px solid #d1d7db;
+    display: flex;
+    align-items: center;
+}
+
+.chat-header .avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #00a884;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.chat-header .agent-name {
+    font-weight: bold;
+    color: #111b21;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    max-width: 70%;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    line-height: 1.4;
+    font-size: 0.9em;
+    word-wrap: break-word;
+}
+
+.message.user {
+    background-color: #dcf8c6; /* Verde claro para mensajes de usuario */
+    align-self: flex-end;
+    margin-left: auto; /* Alinea a la derecha */
+}
+
+.message.bot {
+    background-color: #fff; /* Blanco para mensajes de bot */
+    align-self: flex-start;
+    margin-right: auto; /* Alinea a la izquierda */
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+
+.message .timestamp {
+    display: block;
+    font-size: 0.75em;
+    color: #888;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #f0f2f5; /* Color de fondo de la entrada de chat */
+    border-top: 1px solid #d1d7db;
+}
+
+.chat-input input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 10px;
+    font-size: 0.9em;
+}
+
+.chat-input button {
+    padding: 10px 20px;
+    background-color: #00a884; /* Verde de WhatsApp */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.chat-input button:hover {
+    background-color: #008069;
+}
+
+/* Estilos para el contenedor del Flow simulado */
+.flow-display-container {
+    position: fixed; /* O absolute, dependiendo del contenedor padre */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6); /* Fondo oscuro semitransparente */
+    display: none; /* Oculto por defecto */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+.flow-display-container iframe {
+    width: 90%;
+    max-width: 450px; /* Ancho similar a un móvil */
+    height: 80%;
+    max-height: 700px;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+}
+
+.close-flow-btn {
+    position: absolute;
+    top: 20px; 
+    right: 20px;
+    background-color: #ff3b30; /* Rojo para cerrar */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.close-flow-btn:hover {
+    background-color: #c70000;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Recarga Servicio Online / Juego</title>
+    <link rel="stylesheet" href="flow_style.css">
+</head>
+<body>
+<div class="flow-container">
+    <h2>💻 Recarga Servicio Online / Juego</h2>
+    <form>
+        <div><label for="nombre_servicio_juego">Nombre del Servicio o Juego:</label>
+            <input type="text" id="nombre_servicio_juego" name="nombre_servicio_juego" placeholder="Ej: Netflix, Free Fire" required>
+        </div>
+        <div><label for="tipo_item_juego">Tipo de Ítem (si es juego, ej: diamantes, monedas):</label>
+            <input type="text" id="tipo_item_juego" name="tipo_item_juego" placeholder="Ej: Diamantes, Saldo">
+        </div>
+        <div><label for="cantidad_monto_online">Cantidad de Ítems o Monto de Saldo:</label>
+            <input type="number" id="cantidad_monto_online" name="cantidad_monto_online" step="1" placeholder="Ej: 100 (diamantes) o 10 (USD para saldo)" required>
+        </div>
+        <div><label for="id_usuario_online">ID de Usuario / Correo del Servicio/Juego:</label>
+            <input type="text" id="id_usuario_online" name="id_usuario_online" placeholder="Ej: usuario123 o correo@ejemplo.com">
+        </div>
+        <div><label for="moneda_online">Moneda (si es monto de saldo):</label>
+            <input type="text" id="moneda_online" name="moneda_online" value="USD">
+        </div>
+        <button type="button" onclick="alert('Simulación: Procesando recarga de servicio online.')">Recargar</button>
+    </form>
+</div>
+</body>
+</html>

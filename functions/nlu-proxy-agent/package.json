@@ -1,0 +1,16 @@
+{
+  "name": "nlu-proxy-agent",
+  "version": "1.0.0",
+  "description": "Cloud Function to proxy NLU requests to Gemini for WebAppDemo",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": "18"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@google/generative-ai": "^0.17.0",
+    "@google-cloud/secret-manager": "^5.0.0", 
+    "cors": "^2.8.5"
+  }
+}

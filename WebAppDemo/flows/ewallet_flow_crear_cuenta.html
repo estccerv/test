@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Flow: Crear Cuenta</title><link rel="stylesheet" href="flow_style.css"></head><body>
+<div class="flow-container">
+    <h2>🏦 Crear Nueva Cuenta de Billetera</h2>
+    <form>
+        <div><label for="nombre">Nombre (opcional):</label><input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Perez"></div>
+        <div><label for="pincode">Define tu Pincode (4-6 dígitos):</label><input type="password" id="pincode" name="pincode" pattern="\d{4,6}" required placeholder="Ej: 1234"></div>
+        <div><label for="confirm_pincode">Confirma tu Pincode:</label><input type="password" id="confirm_pincode" name="confirm_pincode" pattern="\d{4,6}" required placeholder="Repite el Pincode"></div>
+        <button type="button" onclick="alert('Simulación: Datos enviados para crear cuenta.')">Crear Cuenta</button>
+    </form>
+</div></body></html>

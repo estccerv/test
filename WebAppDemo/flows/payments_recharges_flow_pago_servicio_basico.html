@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Pago de Servicio Básico</title>
+    <link rel="stylesheet" href="flow_style.css">
+</head>
+<body>
+<div class="flow-container">
+    <h2>🧾 Pago de Servicio Básico</h2>
+    <form>
+        <div><label for="tipo_servicio_pago">Tipo de Servicio:</label>
+            <select id="tipo_servicio_pago" name="tipo_servicio_pago" required>
+                <option value="">Selecciona servicio</option>
+                <option value="luz">Luz</option>
+                <option value="agua">Agua</option>
+                <option value="telefono_fijo">Teléfono Fijo</option>
+                <option value="internet">Internet</option>
+                <option value="tv_cable">TV Cable</option>
+                <option value="universidad">Universidad / Colegiatura</option>
+                <option value="otro">Otro Servicio</option>
+            </select>
+        </div>
+        <div><label for="empresa_servicio_pago">Nombre de la Empresa (opcional):</label>
+            <input type="text" id="empresa_servicio_pago" name="empresa_servicio_pago" placeholder="Ej: CFE, Telmex">
+        </div>
+        <div><label for="referencia_pago_servicio">Número de Referencia / Contrato / Factura:</label>
+            <input type="text" id="referencia_pago_servicio" name="referencia_pago_servicio" required placeholder="Ej: 9876543210">
+        </div>
+        <div><label for="monto_pago_servicio">Monto a Pagar (si no se consulta automáticamente):</label>
+            <input type="number" id="monto_pago_servicio" name="monto_pago_servicio" step="0.01" placeholder="Dejar vacío si se consulta">
+        </div>
+        <div><label for="moneda_pago_servicio">Moneda:</label>
+            <input type="text" id="moneda_pago_servicio" name="moneda_pago_servicio" value="MXN">
+        </div>
+        <button type="button" onclick="alert('Simulación: Procesando pago de servicio.')">Pagar Servicio</button>
+    </form>
+</div>
+</body>
+</html>

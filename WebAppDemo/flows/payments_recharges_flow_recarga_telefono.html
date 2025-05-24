@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Recarga Telefónica</title>
+    <link rel="stylesheet" href="flow_style.css">
+</head>
+<body>
+<div class="flow-container">
+    <h2>📱 Recarga Telefónica / Paquete</h2>
+    <form>
+        <div><label for="numero_tel">Número de Teléfono:</label><input type="tel" id="numero_tel" name="numero_tel" placeholder="Ej: 5512345678" required></div>
+        <div><label for="operador_tel">Operador:</label>
+            <select id="operador_tel" name="operador_tel" required>
+                <option value="">Selecciona operador</option>
+                <option value="telcel">Telcel</option>
+                <option value="movistar">Movistar</option>
+                <option value="att">AT&T</option>
+                <option value="claro">Claro</option>
+                <option value="tigo">Tigo</option>
+                <option value="otro">Otro</option>
+            </select>
+        </div>
+        <div><label for="tipo_recarga_tel">Tipo de Recarga:</label>
+            <select id="tipo_recarga_tel" name="tipo_recarga_tel" onchange="toggleMontoPaquete(this.value)">
+                <option value="tiempo_aire">Tiempo Aire (Saldo)</option>
+                <option value="paquete">Paquete</option>
+            </select>
+        </div>
+        <div id="monto_tiempo_aire_div">
+            <label for="monto_tel">Monto a Recargar (Tiempo Aire):</label>
+            <input type="number" id="monto_tel" name="monto_tel" step="0.01" placeholder="Ej: 50.00">
+        </div>
+        <div id="nombre_paquete_div" style="display:none;">
+            <label for="nombre_paquete_tel">Nombre o Descripción del Paquete:</label>
+            <input type="text" id="nombre_paquete_tel" name="nombre_paquete_tel" placeholder="Ej: Amigo Sin Límite 100">
+        </div>
+        <div><label for="moneda_tel">Moneda:</label><input type="text" id="moneda_tel" name="moneda_tel" value="MXN"></div>
+        <button type="button" onclick="alert('Simulación: Procesando recarga telefónica.')">Recargar / Comprar</button>
+    </form>
+</div>
+<script>
+function toggleMontoPaquete(tipo) {
+    document.getElementById('monto_tiempo_aire_div').style.display = (tipo === 'tiempo_aire') ? 'block' : 'none';
+    document.getElementById('nombre_paquete_div').style.display = (tipo === 'paquete') ? 'block' : 'none';
+}
+// Inicializar visibilidad
+toggleMontoPaquete(document.getElementById('tipo_recarga_tel').value);
+</script>
+</body>
+</html>
