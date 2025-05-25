@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Crear Acuerdo Escrow (Simulado)</title>
+    <link rel="stylesheet" href="../flow_style.css"> <!-- Asume que existe y tiene estilos básicos -->
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f0f2f5; /* Similar al fondo de WhatsApp */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .flow-header-sim {
+            background-color: #005E54; /* Verde WhatsApp */
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .form-container-sim {
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .form-field-sim {
+            margin-bottom: 15px;
+        }
+        .form-field-sim label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        .form-field-sim .input-sim,
+        .form-field-sim .textarea-sim,
+        .form-field-sim .select-sim {
+            width: calc(100% - 22px); /* Ajuste para padding/border */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-field-sim .textarea-sim {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .form-field-sim .helper-text-sim {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 3px;
+        }
+        .footer-sim {
+            background-color: #f0f2f5; /* Fondo del chat */
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        .button-sim {
+            background-color: #075E54; /* Verde WhatsApp más oscuro para botón */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px; /* Botones más redondeados */
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .button-sim:hover {
+            background-color: #054C44;
+        }
+    </style>
+</head>
+<body>
+    <div class="flow-header-sim">
+        Nuevo Acuerdo Escrow (Simulado)
+    </div>
+
+    <div class="form-container-sim">
+        <div class="form-field-sim">
+            <label for="counterparty_identifier">Identificador de la otra parte (Ej: Teléfono)</label>
+            <div class="input-sim" contenteditable="true" role="textbox" aria-label="Identificador de la otra parte"></div>
+        </div>
+
+        <div class="form-field-sim">
+            <label for="item_description">Descripción del Bien/Servicio</label>
+            <div class="textarea-sim" contenteditable="true" role="textbox" aria-label="Descripción del Bien/Servicio"></div>
+            <div class="helper-text-sim">Sea claro y conciso.</div>
+        </div>
+
+        <div class="form-field-sim">
+            <label for="escrow_amount">Monto del Acuerdo</label>
+            <div class="input-sim" contenteditable="true" role="textbox" aria-label="Monto del Acuerdo"></div>
+        </div>
+
+        <div class="form-field-sim">
+            <label for="currency">Moneda</label>
+            <div class="select-sim" role="combobox" aria-label="Moneda">
+                <div>USD - Dólar Americano</div> 
+                <!-- Simular un dropdown. En un render real, esto sería un <select> -->
+            </div>
+        </div>
+
+        <div class="form-field-sim">
+            <label for="release_conditions">Condiciones de Liberación (Breve)</label>
+            <div class="textarea-sim" contenteditable="true" role="textbox" aria-label="Condiciones de Liberación"></div>
+            <div class="helper-text-sim">Ej: Al confirmar recepción del producto.</div>
+        </div>
+    </div>
+
+    <div class="footer-sim">
+        <button class="button-sim" onclick="alert('Acción simulada: Proponer Acuerdo. En WhatsApp, esto enviaría los datos.'); window.parent.closeFlow();">
+            Proponer Acuerdo
+        </button>
+    </div>
+
+</body>
+</html>

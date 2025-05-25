@@ -4,38 +4,45 @@
     <meta charset="UTF-8">
     <title>Flow: Pago de Servicio Básico</title>
     <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="flow-container">
-    <h2>🧾 Pago de Servicio Básico</h2>
-    <form>
-        <div><label for="tipo_servicio_pago">Tipo de Servicio:</label>
-            <select id="tipo_servicio_pago" name="tipo_servicio_pago" required>
-                <option value="">Selecciona servicio</option>
-                <option value="luz">Luz</option>
-                <option value="agua">Agua</option>
-                <option value="telefono_fijo">Teléfono Fijo</option>
-                <option value="internet">Internet</option>
-                <option value="tv_cable">TV Cable</option>
-                <option value="universidad">Universidad / Colegiatura</option>
-                <option value="otro">Otro Servicio</option>
-            </select>
-        </div>
-        <div><label for="empresa_servicio_pago">Nombre de la Empresa (opcional):</label>
-            <input type="text" id="empresa_servicio_pago" name="empresa_servicio_pago" placeholder="Ej: CFE, Telmex">
-        </div>
-        <div><label for="referencia_pago_servicio">Número de Referencia / Contrato / Factura:</label>
-            <input type="text" id="referencia_pago_servicio" name="referencia_pago_servicio" required placeholder="Ej: 9876543210">
-        </div>
-        <div><label for="monto_pago_servicio">Monto a Pagar (si no se consulta automáticamente):</label>
-            <input type="number" id="monto_pago_servicio" name="monto_pago_servicio" step="0.01" placeholder="Dejar vacío si se consulta">
-        </div>
-        <div><label for="moneda_pago_servicio">Moneda:</label>
-            <input type="text" id="moneda_pago_servicio" name="moneda_pago_servicio">
-        </div>
-        <button type="button" onclick="alert('Simulación: Procesando pago de servicio.'); closeFlowWindow();">Pagar Servicio</button>
-    </form>
-</div>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Pago de Servicio Básico</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>🧾 Pago de Servicio Básico</h2>
+        <form>
+            <div><label for="tipo_servicio_pago">Tipo de Servicio:</label>
+                <select id="tipo_servicio_pago" name="tipo_servicio_pago" required>
+                    <option value="">Selecciona servicio</option>
+                    <option value="luz">Luz</option>
+                    <option value="agua">Agua</option>
+                    <option value="telefono_fijo">Teléfono Fijo</option>
+                    <option value="internet">Internet</option>
+                    <option value="tv_cable">TV Cable</option>
+                    <option value="universidad">Universidad / Colegiatura</option>
+                    <option value="otro">Otro Servicio</option>
+                </select>
+            </div>
+            <div><label for="empresa_servicio_pago">Nombre de la Empresa (opcional):</label>
+                <input type="text" id="empresa_servicio_pago" name="empresa_servicio_pago" placeholder="Ej: CFE, Telmex">
+            </div>
+            <div><label for="referencia_pago_servicio">Número de Referencia / Contrato / Factura:</label>
+                <input type="text" id="referencia_pago_servicio" name="referencia_pago_servicio" required placeholder="Ej: 9876543210">
+            </div>
+            <div><label for="monto_pago_servicio">Monto a Pagar (si no se consulta automáticamente):</label>
+                <input type="number" id="monto_pago_servicio" name="monto_pago_servicio" step="0.01" placeholder="Dejar vacío si se consulta">
+            </div>
+            <div><label for="moneda_pago_servicio">Moneda:</label>
+                <input type="text" id="moneda_pago_servicio" name="moneda_pago_servicio">
+            </div>
+            <button type="button" onclick="alert('Simulación: Procesando pago de servicio.'); closeFlowWindow();">Pagar Servicio</button>
+        </form>
+    </div>
 <script>
     function closeFlowWindow() {
         if (window.parent && typeof window.parent.closeFlow === 'function') {
@@ -52,18 +59,26 @@
 
         if (tipo_servicio_basico) {
             const tipoServicioSelect = document.getElementById('tipo_servicio_pago');
-            const optionExists = Array.from(tipoServicioSelect.options).some(opt => opt.value.toLowerCase() === tipo_servicio_basico.toLowerCase());
-            if (optionExists) {
-                tipoServicioSelect.value = tipo_servicio_basico.toLowerCase();
+            // Intentar buscar la opción por valor o texto para hacerlo más robusto
+            let optionToSelect = Array.from(tipoServicioSelect.options).find(opt => opt.value.toLowerCase() === tipo_servicio_basico.toLowerCase() || opt.text.toLowerCase().includes(tipo_servicio_basico.toLowerCase()));
+            if (optionToSelect) {
+                tipoServicioSelect.value = optionToSelect.value;
+            } else if (tipo_servicio_basico.toLowerCase() === "electricidad") { // Alias común para luz
+                 tipoServicioSelect.value = "luz";
             } else {
-                // Si no está en la lista, podríamos seleccionar 'otro' o dejarlo
                 console.warn('Tipo de servicio '+tipo_servicio_basico+' no en lista.');
+                 // Opcionalmente, seleccionar 'otro' si no se encuentra
+                 // tipoServicioSelect.value = "otro"; 
             }
         }
         if (empresa_servicio) document.getElementById('empresa_servicio_pago').value = empresa_servicio;
         if (referencia_pago) document.getElementById('referencia_pago_servicio').value = referencia_pago;
         if (monto) document.getElementById('monto_pago_servicio').value = parseFloat(monto);
         if (moneda) document.getElementById('moneda_pago_servicio').value = moneda;
+        else { 
+             // Si no se especifica la moneda, y hay un monto, podemos asumir una moneda por defecto o dejarlo vacío.
+             // Por ahora se deja vacío para que el usuario complete si es necesario.
+        }
     });
 </script>
 </body>

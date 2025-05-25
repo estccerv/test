@@ -1,7 +1,7 @@
-console.log('Script inicializado');
+console.log('app.js: Script inicializado. Timestamp:', Date.now());
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('app.js: DOMContentLoaded');
+    console.log('app.js: DOMContentLoaded. Timestamp:', Date.now());
 
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const agentGastosButton = document.getElementById('agent-gastos');
     const agentBilleteraButton = document.getElementById('agent-billetera');
     const agentRecargasPagosButton = document.getElementById('agent-recargas-pagos');
+    const agentEscrowButton = document.getElementById('agent-escrow');
     const chatAgentName = document.getElementById('chat-agent-name');
     const chatAvatar = document.getElementById('chat-avatar');
     const flowContainer = document.getElementById('flow-container');
@@ -26,56 +27,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const GEMINI_REQUEST_TIMEOUT_MS = 20000;
 
     let userSimulatedData = {
-        saldo: 1234.56, 
+        saldo: 1234.56,
         moneda: 'USD',
         transacciones: [
             { tipo: 'credito', descripcion: 'Carga de saldo inicial', monto: 50.00, fecha: '2024-07-29' },
             { tipo: 'debito', descripcion: 'Netflix', monto: 15.99, fecha: '2024-07-28' },
-            { tipo: 'debito', descripcion: 'Transferencia a Juan P.', monto: 25.00, fecha: '2024-07-28' },
-            { tipo: 'credito', descripcion: 'Pago de Ana G.', monto: 75.00, fecha: '2024-07-27' },
-            { tipo: 'debito', descripcion: 'Supermercado', monto: 63.20, fecha: '2024-07-26' },
-            { tipo: 'credito', descripcion: 'Depósito nómina', monto: 800.00, fecha: '2024-07-25' },
-            { tipo: 'debito', descripcion: 'Recarga celular', monto: 10.00, fecha: '2024-07-25' },
-            { tipo: 'debito', descripcion: 'Pago Luz', monto: 33.50, fecha: '2024-07-24' },
-            { tipo: 'credito', descripcion: 'Reembolso tienda X', monto: 12.00, fecha: '2024-07-23' },
-            { tipo: 'debito', descripcion: 'Café matutino', monto: 3.50, fecha: '2024-07-22' },
-            { tipo: 'credito', descripcion: 'Venta artículo Y', monto: 40.00, fecha: '2024-07-21' },
-        ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+        ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)),
+        escrowAgreements: [
+            {
+                id: "ESCROW123",
+                status: "FONDOS_DEPOSITADOS",
+                descripcion_bien_servicio: "Laptop Gamer AlienFX",
+                monto: 1200,
+                moneda: "USD",
+                iniciador_nombre: "Carlos V.",
+                contraparte_nombre: "Ana R.",
+                fecha_creacion: "2024-07-25",
+                ultima_actualizacion: "2024-07-28"
+            }
+        ]
     };
 
-        // --- PROMPTS ---
-    // CORREGIDO: Manejo cuidadoso de los ejemplos JSON dentro de los template literals.
     const PROMPTS = {
         gastos: `Eres un asistente amigable para una aplicación de seguimiento de gastos por WhatsApp.
 Tu tarea principal es analizar la solicitud del usuario para registrar un gasto y extraer los datos relevantes.
-Si el usuario simplemente saluda (ej. "hola", "buenos días"), responde amablemente y pregunta cómo puedes ayudar con sus gastos.
-Si el usuario pregunta qué puedes hacer, explica brevemente que puedes ayudar a registrar gastos y pide que describa el gasto.
-
-Extrae los siguientes datos del texto del usuario si la intención es registrar un gasto:
-- Monto (solo el número, sin símbolos de moneda)
-- Moneda (si se menciona, por ejemplo "pesos", "USD", "EUR". Si no se menciona, intenta inferir o deja vacío si no es posible)
-- Categoría (si se menciona o es inferible de forma clara y común, por ejemplo "Comida", "Transporte", "Ocio", "Supermercado", "Servicios". Si no es claro, deja vacío o asigna "General")
-- Descripción (una descripción concisa del gasto, excluyendo palabras como "gasté", "pagué", "añade", "registra").
-- Fecha (si se menciona explícitamente, como "ayer", "hoy", "el martes pasado", "25 de diciembre". Si no se menciona, indica que se debe usar la fecha actual).
-
-Considera variaciones comunes y lenguaje coloquial.
-
-Formatea la respuesta estrictamente como un objeto JSON con las siguientes claves:
-"intencion": string ("registrar_gasto", "saludo", "ayuda_gastos", "desconocido")
-"entidades": object (con amount, currency, category, description, date_reference si es registrar_gasto) | null
-"respuesta_amigable": string (un mensaje amigable para el usuario, especialmente para saludos o si falta información)
-"error_mensaje": string | null (si falta un dato crucial como el monto para un gasto, o si la solicitud no parece ser un registro de gasto claro y no es un saludo/ayuda)
-
-Ejemplo de texto del usuario: "Hola"
-Salida JSON esperada:
-${"```json"}
-{
-  "intencion": "saludo",
-  "entidades": null,
-  "respuesta_amigable": "¡Hola! ¿Cómo puedo ayudarte a registrar tus gastos hoy?",
-  "error_mensaje": null
-}
-${"```"}
+Formatea la respuesta estrictamente como un objeto JSON.
 
 Ejemplo de texto del usuario: "Ayer pagué 35000 pesos por la cena en el restaurante italiano"
 Salida JSON esperada:
@@ -89,48 +65,14 @@ ${"```json"}
     "description": "Cena en restaurante italiano",
     "date_reference": "ayer"
   },
-  "respuesta_amigable": "Entendido. Voy a registrar una cena en restaurante italiano por 35000 pesos para ayer. Haz clic en el botón de abajo para abrir el WhatsApp Flow y confirmar o añadir detalles.",
+  "respuesta_amigable": "Entendido. Voy a registrarlo. Completa los detalles en el Flow.",
   "error_mensaje": null
 }
 ${"```"}
-` ,
-        billetera: `Eres un asistente NLU amigable para una billetera electrónica en WhatsApp. Tu tarea es analizar el texto del usuario, identificar su intención principal y las entidades relevantes, y proporcionar una respuesta conversacional.
-Si el usuario saluda (ej. "hola"), responde amablemente y pregunta en qué puede ayudar con su billetera.
-Si el usuario pregunta por tus funciones, explica brevemente las operaciones de billetera que manejas.
-
-Intenciones Posibles:
-- crear_cuenta
-- ver_saldo
-- cargar_saldo
-- retirar_saldo
-- transferir_dinero
-- solicitar_pago
-- aceptar_pago
-- definir_pincode
-- ver_ultimas_transacciones
-- saludo_billetera
-- ayuda_billetera
-- intencion_desconocida
-
-Entidades a Extraer (si aplican a la intención):
-- monto, moneda, destinatario, deudor, concepto, nombre_usuario, pincode.
-
-Formato de Salida Estricto (JSON):
-Devuelve un objeto JSON con "intencion", "entidades", "respuesta_amigable", y "error_mensaje".
-"respuesta_amigable" debe ser una frase completa y amable para el usuario, indicando si se mostrará un formulario.
-"error_mensaje" es para cuando falten datos cruciales.
-
-Ejemplos:
-Usuario: "Hola"
-Salida:
-${"```json"}
-{
-  "intencion": "saludo_billetera",
-  "entidades": {},
-  "respuesta_amigable": "¡Hola! Soy tu asistente de Billetera Electrónica. ¿Qué operación te gustaría realizar hoy?",
-  "error_mensaje": null
-}
-${"```"}
+`,
+        billetera: `Eres un asistente NLU amigable para una billetera electrónica en WhatsApp.
+Intenciones Posibles: crear_cuenta, ver_saldo, cargar_saldo, etc.
+Formato de Salida Estricto (JSON).
 
 Usuario: "Ver mi saldo"
 Salida:
@@ -142,61 +84,10 @@ ${"```json"}
   "error_mensaje": null
 }
 ${"```"}
-
-Usuario: "Muéstrame mis últimos movimientos"
-Salida:
-${"```json"}
-{
-  "intencion": "ver_ultimas_transacciones",
-  "entidades": {},
-  "respuesta_amigable": "Claro, aquí están tus últimas transacciones:",
-  "error_mensaje": null
-}
-${"```"}
-
-Usuario: "transferir"
-Salida:
-${"```json"}
-{
-  "intencion": "transferir_dinero",
-  "entidades": {},
-  "respuesta_amigable": "Entendido, quieres transferir dinero. Para ayudarte mejor, ¿podrías decirme el monto y a quién deseas transferir? Luego podrás completar los detalles en el WhatsApp Flow.",
-  "error_mensaje": "Faltan detalles para la transferencia (monto, destinatario)."
-}
-${"```"}
-` ,
-        recargas_pagos: `Eres un asistente NLU amigable para un servicio de Recargas y Pagos en WhatsApp. Analiza el texto del usuario, identifica su intención y entidades, y responde de forma conversacional.
-Si el usuario saluda (ej. "buenas"), responde amablemente y pregunta cómo puedes ayudar con sus recargas o pagos.
-Si el usuario pregunta por tus funciones, explica los servicios que ofreces.
-
-Intenciones Posibles:
-- recargar_tiempo_aire
-- comprar_paquete_movil
-- recargar_servicio_online
-- pagar_servicio_basico
-- consultar_factura_servicio
-- saludo_recargas_pagos
-- ayuda_pagos_recargas
-- intencion_desconocida
-
-Entidades a Extraer:
-- monto, moneda, operador_telefono, numero_telefono, nombre_paquete, nombre_servicio_online, nombre_juego, id_usuario_juego, tipo_servicio_basico, empresa_servicio, referencia_pago.
-
-Formato de Salida Estricto (JSON):
-Devuelve un objeto JSON con "intencion", "entidades", "respuesta_amigable", y "error_mensaje".
-"respuesta_amigable" es la frase para el usuario, indicando que se mostrará un formulario si aplica.
-
-Ejemplos:
-Usuario: "Hola bot"
-Salida:
-${"```json"}
-{
-  "intencion": "saludo_recargas_pagos",
-  "entidades": {},
-  "respuesta_amigable": "¡Hola! Soy tu asistente para Recargas y Pagos. ¿En qué te puedo ayudar hoy?",
-  "error_mensaje": null
-}
-${"```"}
+`,
+        recargas_pagos: `Eres un asistente NLU amigable para un servicio de Recargas y Pagos en WhatsApp.
+Intenciones: recargar_tiempo_aire, pagar_servicio_basico, etc.
+Formato de Salida Estricto (JSON).
 
 Usuario: "quiero pagar la luz con referencia 12345"
 Salida:
@@ -204,14 +95,155 @@ ${"```json"}
 {
   "intencion": "pagar_servicio_basico",
   "entidades": {"tipo_servicio_basico": "luz", "referencia_pago": "12345"},
-  "respuesta_amigable": "Entendido, quieres pagar el servicio de luz con referencia 12345. Haz clic abajo para abrir el WhatsApp Flow y completar los detalles.",
+  "respuesta_amigable": "Entendido, pagar servicio de luz. Completa los detalles en el Flow.",
+  "error_mensaje": null
+}
+${"```"}
+`,
+        escrow: `Eres un asistente NLU avanzado y amigable para un servicio de Pagos Escrow por WhatsApp. Tu función es interpretar la solicitud del usuario para iniciar, gestionar o consultar acuerdos de escrow, guiándolo de forma conversacional.
+Si el usuario simplemente saluda (ej. "hola", "buenas"), responde amablemente y ofrece ayuda específica para escrow.
+Si el usuario pregunta qué puedes hacer (ej. "ayuda", "¿qué haces?"), explica brevemente las funciones principales de escrow que manejas.
+Si la intención no es clara o es muy genérica, intenta clarificar o guiar al usuario.
+
+Intenciones Principales Posibles:
+- crear_acuerdo_escrow (Ej: "quiero crear un acuerdo con @vendedor para un laptop de 500 USD")
+- revisar_acuerdo_escrow (Ej: "revisar el acuerdo ESCROW123")
+- depositar_fondos_escrow (Ej: "pagar el acuerdo ESCROW123")
+- confirmar_recepcion_escrow (Ej: "ya recibí el producto del acuerdo ESCROW123")
+- iniciar_disputa_escrow (Ej: "tengo un problema con ESCROW123")
+- ver_estado_escrow (Ej: "cómo va mi acuerdo ESCROW123?")
+- saludo_escrow
+- ayuda_escrow
+- intencion_desconocida
+
+Entidades Clave a Extraer (según la intención):
+- acuerdo_id (el ID único del acuerdo escrow)
+- monto (solo el número)
+- moneda (ej. USD, EUR, MXN)
+- descripcion_bien_servicio
+- identificador_contraparte (ej: número de teléfono, email, o @usuario)
+- motivo_disputa, detalles_disputa
+
+Formato de Salida Estricto (JSON):
+Devuelve un objeto JSON con "intencion", "entidades" (con las entidades extraídas), "respuesta_amigable", y "error_mensaje".
+"respuesta_amigable" debe ser una frase completa y amable. Si se va a abrir un Flow, debe indicarlo. Si faltan datos para una acción, debe pedirlos amablemente.
+"error_mensaje" es para cuando faltan datos cruciales y la "respuesta_amigable" ya intenta obtenerlos pero se quiere ser más explícito o es un error técnico.
+
+Ejemplos Detallados:
+
+Usuario: "Hola"
+Salida:
+${"```json"}
+{
+  "intencion": "saludo_escrow",
+  "entidades": {},
+  "respuesta_amigable": "¡Hola! Soy tu asistente de Pagos Escrow. ¿Cómo puedo ayudarte hoy? ¿Quizás crear un nuevo acuerdo o consultar uno existente?",
+  "error_mensaje": null
+}
+${"```"}
+
+Usuario: "Ayuda"
+Salida:
+${"```json"}
+{
+  "intencion": "ayuda_escrow",
+  "entidades": {},
+  "respuesta_amigable": "Claro. Puedo ayudarte a crear acuerdos de pago seguro (escrow), revisar propuestas, depositar fondos, confirmar la recepción de bienes/servicios, iniciar disputas si algo sale mal, o ver el estado de tus transacciones escrow. ¿Qué te gustaría hacer?",
+  "error_mensaje": null
+}
+${"```"}
+
+Usuario: "Quiero hacer un pago seguro"
+Salida:
+${"```json"}
+{
+  "intencion": "crear_acuerdo_escrow",
+  "entidades": {},
+  "respuesta_amigable": "Entendido, quieres crear un acuerdo de pago seguro (escrow). Para comenzar, necesitaré algunos detalles: ¿Con quién es el acuerdo (su teléfono o email)?, ¿Cuál es el bien o servicio involucrado?, y ¿Cuál es el monto y la moneda del acuerdo? Luego te guiaré para completar la información en un formulario seguro de WhatsApp.",
+  "error_mensaje": "Faltan detalles para crear el acuerdo (contraparte, descripción, monto)."
+}
+${"```"}
+
+Usuario: "Crear un acuerdo con Juan Pérez para un servicio de diseño por 300 EUR"
+Salida:
+${"```json"}
+{
+  "intencion": "crear_acuerdo_escrow",
+  "entidades": {
+    "identificador_contraparte": "Juan Pérez",
+    "descripcion_bien_servicio": "servicio de diseño",
+    "monto": 300,
+    "moneda": "EUR"
+  },
+  "respuesta_amigable": "Entendido. Vamos a crear un acuerdo escrow con Juan Pérez para un servicio de diseño por 300 EUR. Por favor, completa los detalles adicionales en el formulario de WhatsApp que se abrirá.",
+  "error_mensaje": null
+}
+${"```"}
+
+Usuario: "Consultar estado de ESCROWID789"
+Salida:
+${"```json"}
+{
+  "intencion": "ver_estado_escrow",
+  "entidades": {
+    "acuerdo_id": "ESCROWID789"
+  },
+  "respuesta_amigable": "Consultando el estado del acuerdo ESCROWID789. Un momento...",
+  "error_mensaje": null
+}
+${"```"}
+
+Usuario: "Pagar el acuerdo ESCROWID789"
+Salida:
+${"```json"}
+{
+  "intencion": "depositar_fondos_escrow",
+  "entidades": {
+    "acuerdo_id": "ESCROWID789"
+  },
+  "respuesta_amigable": "De acuerdo, vamos a proceder con el depósito de fondos para el acuerdo ESCROWID789. Te mostraré el formulario para completar el pago.",
+  "error_mensaje": null
+}
+${"```"}
+
+Usuario: "Ya me llegó la laptop del trato EXTORDER555"
+Salida:
+${"```json"}
+{
+  "intencion": "confirmar_recepcion_escrow",
+  "entidades": {
+    "acuerdo_id": "EXTORDER555",
+    "descripcion_bien_servicio": "laptop"
+  },
+  "respuesta_amigable": "¡Excelente! Vamos a confirmar la recepción de la laptop para el acuerdo EXTORDER555. Por favor, usa el formulario para confirmar.",
+  "error_mensaje": null
+}
+${"```"}
+
+Usuario: "No sé qué hacer"
+Salida:
+${"```json"}
+{
+  "intencion": "ayuda_escrow",
+  "entidades": {},
+  "respuesta_amigable": "No te preocupes. Estoy aquí para ayudarte con pagos escrow. Puedes decirme si quieres crear un nuevo acuerdo, verificar uno que ya tienes, o quizás hacer un pago. ¿Qué tienes en mente?",
+  "error_mensaje": null
+}
+${"```"}
+
+Usuario: "blablabla algo sin sentido"
+Salida:
+${"```json"}
+{
+  "intencion": "intencion_desconocida",
+  "entidades": {},
+  "respuesta_amigable": "Lo siento, no entendí muy bien. ¿Podrías reformularlo? Recuerda que te puedo ayudar con la creación, consulta o gestión de pagos escrow.",
   "error_mensaje": null
 }
 ${"```"}
 `
     };
-    // --- FIN PROMPTS ---
-
+    console.log('app.js: PROMPTS object defined.');
 
     const INTENT_TO_FLOW_MAP = {
         'registrar_gasto': 'expense_flow_registrar_gasto.html',
@@ -227,8 +259,15 @@ ${"```"}
         'comprar_paquete_movil': 'payments_recharges_flow_recarga_telefono.html',
         'recargar_servicio_online': 'payments_recharges_flow_recarga_online.html',
         'pagar_servicio_basico': 'payments_recharges_flow_pago_servicio_basico.html',
+        'crear_acuerdo_escrow': 'escrow/flow_escrow_create_agreement.html',
+        'revisar_acuerdo_escrow': 'escrow/flow_escrow_review_agreement.html',
+        'depositar_fondos_escrow': 'escrow/flow_escrow_fund.html',
+        'confirmar_recepcion_escrow': 'escrow/flow_escrow_buyer_confirmation.html',
+        'iniciar_disputa_escrow': 'escrow/flow_escrow_initiate_dispute.html',
+        'ver_estado_escrow': 'escrow/flow_escrow_view_status.html',
     };
 
+    // Renamed from setSettingsAndStart, simplified
     window.setApiKeyAndStart = () => {
         const apiKey = geminiApiKeyInput.value.trim();
         if (!apiKey) {
@@ -241,35 +280,45 @@ ${"```"}
         currentApiKeyDisplaySpan.textContent = `***${apiKey.slice(-4)}`;
         apiKeyStatusP.textContent = '¡Clave guardada!';
         addBotMessage('Bienvenido. Por favor, selecciona un bot de la izquierda para comenzar.');
+        console.log('app.js: API Key guardada.');
     };
 
     window.selectAgent = (agent) => {
+        console.log('app.js: selectAgent called with:', agent);
         currentAgent = agent;
         messageInput.disabled = false;
         sendButton.disabled = false;
         chatMessages.innerHTML = '';
         closeFlow();
-        [agentGastosButton, agentBilleteraButton, agentRecargasPagosButton].forEach(btn => btn.classList.remove('active'));
+        [agentGastosButton, agentBilleteraButton, agentRecargasPagosButton, agentEscrowButton].forEach(btn => {
+            if(btn) btn.classList.remove('active');
+        });
         let greetingMessage = 'Hola, soy tu Asistente. ¿En qué puedo ayudarte?';
         if (agent === 'gastos') {
             currentAgentFullName = '🤖 Bot de Gastos (Gemini)';
             chatAvatar.textContent = '💸';
-            agentGastosButton.classList.add('active');
-            greetingMessage = 'Hola, soy el Bot de Gastos. ¿Qué gasto deseas registrar hoy? (Ej: "cena de 500 pesos ayer")';
+            if(agentGastosButton) agentGastosButton.classList.add('active');
+            greetingMessage = 'Hola, soy el Bot de Gastos. ¿Qué gasto deseas registrar hoy?';
         } else if (agent === 'billetera') {
             currentAgentFullName = '💳 Bot de Billetera (Gemini)';
             chatAvatar.textContent = '🏦';
-            agentBilleteraButton.classList.add('active');
-            greetingMessage = 'Hola, soy el Bot de Billetera. ¿Qué operación de billetera deseas realizar? (Ej: "ver saldo", "últimos movimientos")';
+            if(agentBilleteraButton) agentBilleteraButton.classList.add('active');
+            greetingMessage = 'Hola, soy el Bot de Billetera. ¿Qué operación deseas realizar?';
         } else if (agent === 'recargas_pagos') {
             currentAgentFullName = '🔌 Bot de Recargas y Pagos (Gemini)';
             chatAvatar.textContent = '💡';
-            agentRecargasPagosButton.classList.add('active');
-            greetingMessage = 'Hola, soy tu Agente de Recargas y Pagos. ¿Qué deseas hacer? (Ej: "recargar cel" o "pagar luz")';
+            if(agentRecargasPagosButton) agentRecargasPagosButton.classList.add('active');
+            greetingMessage = 'Hola, soy tu Agente de Recargas y Pagos. ¿Qué deseas hacer?';
+        } else if (agent === 'escrow') {
+            currentAgentFullName = '🛡️ Bot Pagos Escrow (Gemini)';
+            chatAvatar.textContent = '🛡️';
+            if(agentEscrowButton) agentEscrowButton.classList.add('active');
+            greetingMessage = 'Hola, soy el Bot de Pagos Escrow. ¿Qué deseas hacer hoy?';
         }
         chatAgentName.textContent = currentAgentFullName;
         addBotMessage(greetingMessage);
         messageInput.focus();
+        console.log('app.js: currentAgent set to:', currentAgent);
     };
 
     window.sendMessage = () => {
@@ -294,9 +343,11 @@ ${"```"}
     });
 
     async function processUserMessageWithGemini(text) {
+        console.log('app.js: processUserMessageWithGemini for agent:', currentAgent);
         const selectedPrompt = PROMPTS[currentAgent];
         if (!selectedPrompt) {
             addBotMessage('Error: No hay un prompt configurado para este agente.');
+            console.error('Error crítico: Prompt no encontrado para agente:', currentAgent);
             removeThinkingMessage();
             messageInput.disabled = false; sendButton.disabled = false;
             return;
@@ -327,22 +378,13 @@ Salida:
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ error: { message: response.statusText } }));
-                let errorMsg = `Error con Gemini (${response.status})`;
-                if (errorData.error && errorData.error.message) errorMsg += `: ${errorData.error.message.substring(0, 200)}`;
-                addBotMessage(`${errorMsg}. Revisa la clave API y la consola.`);
+                addBotMessage(`Error con Gemini (${response.status}): ${errorData.error?.message || response.statusText}.`);
                 return;
             }
 
             const geminiResponse = await response.json();
             let nluResult = {};
-            let rawNluOutput = '';
-            if (geminiResponse.candidates && geminiResponse.candidates[0]?.content?.parts?.[0]?.text) {
-                rawNluOutput = geminiResponse.candidates[0].content.parts[0].text;
-            } else {
-                addBotMessage('No se pudo obtener una respuesta NLU válida de Gemini.');
-                console.error('Estructura de respuesta de Gemini inesperada:', geminiResponse);
-                return;
-            }
+            let rawNluOutput = geminiResponse.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
             try {
                 const jsonMatch = rawNluOutput.match(/```json\s*([\s\S]+?)\s*```/);
@@ -350,6 +392,9 @@ Salida:
                     nluResult = JSON.parse(jsonMatch[1]);
                 } else {
                     let cleanJson = rawNluOutput.trim();
+                    if (cleanJson.startsWith('```') && cleanJson.endsWith('```')) {
+                        cleanJson = cleanJson.substring(3, cleanJson.length - 3);
+                    }
                     const firstBrace = cleanJson.indexOf('{');
                     const lastBrace = cleanJson.lastIndexOf('}');
                     if (firstBrace !== -1 && lastBrace > firstBrace) {
@@ -366,10 +411,11 @@ Salida:
             const { intencion, entidades, respuesta_amigable, error_mensaje } = nluResult;
             let flowDetails = null;
             let finalBotResponse = respuesta_amigable || "Entendido.";
+            let isHTMLResponse = false;
 
-            if (intencion === 'intencion_desconocida' || intencion === 'desconocido' || !intencion) {
-                finalBotResponse = respuesta_amigable || "Lo siento, no estoy seguro de cómo ayudarte. ¿Podrías reformularlo?";
-            } else if (error_mensaje && intencion !== 'saludo' && !intencion?.startsWith('saludo_') && intencion !== 'ayuda_gastos' && !intencion?.startsWith('ayuda_')) {
+            if (intencion === 'intencion_desconocida' || !intencion) {
+                finalBotResponse = respuesta_amigable || "Lo siento, no estoy seguro de cómo ayudarte.";
+            } else if (error_mensaje && !intencion?.startsWith('saludo_') && !intencion?.startsWith('ayuda_')) {
                 finalBotResponse = respuesta_amigable ? `${respuesta_amigable} ${error_mensaje}` : error_mensaje;
             }
 
@@ -380,42 +426,40 @@ Salida:
                          flowDetails = { flowFileName: INTENT_TO_FLOW_MAP[intencion], flowData: { saldo: userSimulatedData.saldo, moneda: userSimulatedData.moneda }, buttonText: 'Ver Detalle Saldo (Flow)' };
                     }
                 } else if (intencion === 'ver_ultimas_transacciones') {
-                    // MODIFICADO: Formatear transacciones como HTML para preservar saltos de línea
                     let transaccionesHtml = (respuesta_amigable || "Aquí están tus últimas transacciones:") + "<br>";
-                    const ultimasDiez = userSimulatedData.transacciones.slice(0, 10);
-                    if (ultimasDiez.length === 0) {
-                        transaccionesHtml += "No tienes transacciones recientes.";
-                    } else {
-                        ultimasDiez.forEach(t => {
-                            const signo = t.tipo === 'credito' ? '🟢 +' : '🔴 -';
-                            transaccionesHtml += `📅 ${t.fecha}: ${signo}${t.monto.toFixed(2)} ${userSimulatedData.moneda} (${escapeHTML(t.descripcion)})<br>`;
-                        });
-                    }
+                    userSimulatedData.transacciones.slice(0, 10).forEach(t => {
+                        transaccionesHtml += `📅 ${t.fecha}: ${t.tipo === 'credito' ? '🟢 +' : '🔴 -'}${t.monto.toFixed(2)} ${userSimulatedData.moneda} (${escapeHTML(t.descripcion)})<br>`;
+                    });
                     finalBotResponse = transaccionesHtml;
-                    flowDetails = null; 
+                    isHTMLResponse = true;
+                    flowDetails = null;
+                }
+            } else if (currentAgent === 'escrow') {
+                 if (intencion === 'ver_estado_escrow' && entidades && entidades.acuerdo_id) {
+                    const acuerdo = userSimulatedData.escrowAgreements.find(a => a.id === entidades.acuerdo_id);
+                    finalBotResponse = acuerdo ? `Estado de ${escapeHTML(acuerdo.id)}: **${escapeHTML(acuerdo.status)}**.` : `No encontré acuerdo ${escapeHTML(entidades.acuerdo_id)}.`;
+                 }
+            }
+
+            const debeAbrirFlow = INTENT_TO_FLOW_MAP[intencion] && !intencion?.startsWith('saludo_') && !intencion?.startsWith('ayuda_') && intencion !== 'ver_ultimas_transacciones';
+
+            if (debeAbrirFlow) {
+                if (!flowDetails) {
+                    const flowFileName = INTENT_TO_FLOW_MAP[intencion];
+                    let flowData = entidades || {};
+                    if (currentAgent === 'escrow' && entidades && entidades.acuerdo_id) {
+                        const acuerdo = userSimulatedData.escrowAgreements.find(a => a.id === entidades.acuerdo_id);
+                        if (acuerdo) flowData = { ...flowData, ...acuerdo }; // Merge acuerdo data if found
+                    }
+                    flowDetails = { flowFileName, flowData, buttonText: 'Abrir Formulario WhatsApp' };
                 }
             }
-
-            const debeAbrirFlow = INTENT_TO_FLOW_MAP[intencion] && 
-                                  (intencion !== 'saludo' && !intencion?.startsWith('saludo_')) &&
-                                  (intencion !== 'ayuda_gastos' && !intencion?.startsWith('ayuda_')) &&
-                                  (intencion !== 'ver_ultimas_transacciones');
-            
-            if (debeAbrirFlow && !(currentAgent === 'billetera' && intencion === 'ver_saldo' && flowDetails)) {
-                const flowFileName = INTENT_TO_FLOW_MAP[intencion];
-                const flowData = entidades || {}; 
-                flowDetails = { flowFileName, flowData, buttonText: 'Abrir WhatsApp Flow' };
-            }
-            
-            addBotMessage(finalBotResponse, { flowDetails, isHTML: (currentAgent === 'billetera' && intencion === 'ver_ultimas_transacciones') });
-
+            addBotMessage(finalBotResponse, { flowDetails, isHTML: isHTMLResponse });
         } catch (error) {
             clearTimeout(timeoutId);
             removeThinkingMessage();
-            let errorText = 'Error procesando tu mensaje.';
-            if (error.name === 'AbortError') errorText = 'La solicitud a Gemini tardó demasiado.';
-            else console.error('Error catastrófico en processUserMessageWithGemini:', error);
-            addBotMessage(errorText);
+            addBotMessage(error.name === 'AbortError' ? 'La solicitud a Gemini tardó demasiado.' : 'Error procesando tu mensaje.');
+            console.error('Error en processUserMessageWithGemini:', error);
             messageInput.disabled = false; sendButton.disabled = false;
         }
     }
@@ -449,20 +493,12 @@ Salida:
         }
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', 'bot');
-        // MODIFICADO: Usar textOrHtml directamente si isHTML es true, sino escapar.
         let htmlContent = isHTML ? textOrHtml : `<p>${escapeHTML(textOrHtml)}</p>`;
-        
+
         if (flowDetails && flowDetails.flowFileName) {
             const buttonId = `flow-button-${Date.now()}`;
-            // No añadir <p> alrededor del botón si el contenido principal ya es HTML complejo.
             const buttonHtml = `<button id="${buttonId}" class="flow-trigger-button">${escapeHTML(flowDetails.buttonText || 'Abrir WhatsApp Flow')}</button>`;
-            if (isHTML) {
-                 // Si el contenido principal es HTML, adjuntar el botón de manera más controlada o como parte del mismo.
-                 // Por simplicidad, lo añadiremos después del HTML principal, pero esto podría necesitar ajustes de estilo.
-                 htmlContent += buttonHtml; 
-            } else {
-                htmlContent += buttonHtml;
-            }
+            htmlContent += buttonHtml;
             
             setTimeout(() => {
                 const buttonElement = document.getElementById(buttonId);
@@ -479,6 +515,7 @@ Salida:
     }
 
     window.showFlow = (flowFileName, flowData = {}) => {
+        // Siempre usa el modo placeholder por ahora, cargando el HTML directamente.
         let src = `flows/${flowFileName}`;
         const queryParams = new URLSearchParams();
         if (flowData && typeof flowData === 'object') {
@@ -489,6 +526,9 @@ Salida:
             }
         }
         if (queryParams.toString()) src += `?${queryParams.toString()}`;
+        console.log('app.js: Showing flow (Placeholder Mode):', src, 'with data:', flowData);
+        const flowTitleDisplay = document.getElementById('flow-title-display');
+        if(flowTitleDisplay) flowTitleDisplay.textContent = flowFileName.replace('.html', '').replace(/_/g, ' ').replace('escrow/', '').toUpperCase();
         flowIframe.src = src;
         flowContainer.style.display = 'flex';
     }
@@ -500,7 +540,7 @@ Salida:
     };
 
     function escapeHTML(str) {
-        if (typeof str !== 'string') return '';
+        if (typeof str !== 'string') return String(str);
         const div = document.createElement('div');
         div.appendChild(document.createTextNode(str));
         return div.innerHTML;
@@ -510,7 +550,7 @@ Salida:
     chatAppContainerDiv.style.display = 'none';
     messageInput.disabled = true;
     sendButton.disabled = true;
-    console.log('app.js: UI inicializada.');
+    console.log('app.js: UI inicializada. Esperando clave API.');
 });
 
-console.log('app.js: Script Finalizado.');
+console.log('app.js: Script Finalizado. Timestamp:', Date.now());

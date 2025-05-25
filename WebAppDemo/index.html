@@ -5,49 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebApp Chat Demo</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
 </head>
 <body>
-    <div class="api-key-setup" id="api-key-setup">
-        <h3>Configurar Clave API de Gemini</h3>
-        <p>Pega tu clave API de Google AI (Gemini) aquí para habilitar la NLU real.</p>
-        <p><strong>Advertencia:</strong> Esta clave solo se usará en tu navegador para este demo local. No subas esta página a un sitio público con una clave pegada.</p>
-        <input type="password" id="gemini-api-key-input" placeholder="Pega tu clave API de Gemini aquí">
-        <button onclick="setApiKeyAndStart()">Guardar Clave y Comenzar</button>
-        <p id="api-key-status" style="margin-top:10px; font-style: italic;"></p>
+    <div class="api-key-container" id="api-key-setup">
+        <div class="api-key-card">
+            <h2>Configuración</h2>
+            <p>Ingresa tu clave API de Google AI (Gemini) para habilitar la NLU.</p>
+            <div class="api-key-input-group">
+                <input type="password" id="gemini-api-key-input" placeholder="Pega tu clave API de Gemini aquí">
+                <button id="toggle-api-key-visibility" onclick="toggleApiKeyVisibility()" title="Mostrar/Ocultar clave">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" id="eye-icon"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" id="eye-slash-icon" style="display:none;"><path d="M12 6.5c2.76 0 5 2.24 5 5 0 .51-.1 1-.26 1.45l1.78 1.78c.53-.8.98-1.73 1.28-2.73C19.27 8.11 15 5 10.01 5c-.74 0-1.45.11-2.13.3L9.55 7.24C10.24 6.8 11.09 6.5 12 6.5zm8.06 9.06L18.88 14.4c-.53.8-.98 1.73-1.28 2.73C16.27 19.89 12 23 6.99 23c-.74 0-1.45.11-2.13-.3L3.18 21.02c-1.67-1.39-2.88-3.25-3.18-5.52L1.43 12c1.73-4.39 6-7.5 11-7.5.96 0 1.89.13 2.77.36l2.02 2.02L3.39 3.39 4.8 1.97l16.22 16.22-1.41 1.41zM12 17c-2.76 0-5-2.24-5-5 0-.51.1-1 .26-1.45L10.55 14C9.86 14.45 9 15.17 9 16c0 1.66 1.34 3 3 3 .83 0 1.55-.34 2.08-.88l1.47 1.47c-.6.53-1.31.81-2.05.81zm0-8C9.24 9 7 11.24 7 14c0 .51.1 1 .26 1.45L3.81 11.9C3.1 10.96 2.13 10.22 1 9.5L2.43 6C4.16 2.61 8.5 0 14.01 0c.74 0 1.45.11 2.13.3L13.45 4.76C12.76 4.2 11.91 3.5 11 3.5c-1.66 0-3 1.34-3 3s1.34 3 3 3zM12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+                </button>
+            </div>
+            
+            <button class="primary-button" onclick="setApiKeyAndStart()">Guardar Clave y Comenzar</button> <!-- Cambiado onclick -->
+            <p id="api-key-status" class="status-message"></p>
+            <p class="api-key-warning"><strong>Advertencia:</strong> La clave API se guarda localmente.</p>
+        </div>
     </div>
 
     <div class="chat-app-container" id="chat-app-container" style="display:none;">
         <div class="sidebar">
-            <h2>Mis Chats</h2>
-            <div class="agent-selector">
-                <button id="agent-gastos" onclick="selectAgent('gastos')">🤖 Bot de Gastos</button>
-                <button id="agent-billetera" onclick="selectAgent('billetera')">💳 Bot de Billetera</button>
-                <button id="agent-recargas-pagos" onclick="selectAgent('recargas_pagos')">🔌 Bot de Recargas y Pagos</button>
+            <div class="sidebar-header">
+                <h2>Mis Chats</h2>
             </div>
-             <div style="margin-top: 20px; padding: 10px; background: #f9f9f9; border-radius: 5px; font-size: 0.8em;">
-                <strong>Clave API actual:</strong> <span id="current-api-key-display">No configurada</span>
+            <div class="agent-selector">
+                <button id="agent-gastos" onclick="selectAgent('gastos')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M16.53 11.06L15.47 10l-4.88 4.88-2.12-2.12-1.06 1.06L10.59 17l5.94-5.94zM20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zM4 6l8 5 8-5H4z"></path></svg>
+                    Bot de Gastos
+                </button>
+                <button id="agent-billetera" onclick="selectAgent('billetera')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path></svg>
+                    Bot de Billetera
+                </button>
+                <button id="agent-recargas-pagos" onclick="selectAgent('recargas_pagos')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.49 2.54l1.49 1.49C21.37 14.82 22 13.22 22 11.5c0-4.77-3.28-8.74-7.66-9.86L13 2.05zm-2 0v2.02C7.61 5.12 5 8.34 5 12.5c0 1.72.63 3.32 1.66 4.58L5.17 18.57C3.63 17.04 3 14.88 3 12.5c0-4.26 2.95-7.91 6.91-8.86L11 2.05zM12 6.5c-2.48 0-4.5 2.02-4.5 4.5 0 1.07.38 2.04.99 2.82l1.46-1.46A3.45 3.45 0 019.5 11c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5c0 .61-.22 1.16-.58 1.58l1.46 1.46c.61-.78.99-1.75.99-2.82 0-2.48-2.02-4.5-4.5-4.5z"></path></svg>
+                    Bot de Recargas y Pagos
+                </button>
+                <button id="agent-escrow" onclick="selectAgent('escrow')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path></svg>
+                    Bot Pagos Escrow
+                </button>
+            </div>
+            <div class="sidebar-footer">
+                <strong>Clave API:</strong> <span id="current-api-key-display">No configurada</span>
+                <!-- Eliminado Modo Flow display -->
             </div>
         </div>
+
         <div class="chat-window">
             <div class="chat-header">
-                <div class="avatar" id="chat-avatar">B</div>
-                <div class="agent-name" id="chat-agent-name">Selecciona un Bot</div>
+                <div class="avatar" id="chat-avatar">?</div>
+                <div class="agent-info">
+                    <div class="agent-name" id="chat-agent-name">Selecciona un Bot</div>
+                    <div class="agent-status" id="chat-agent-status"></div>
+                </div>
             </div>
             <div class="chat-messages" id="chat-messages">
-                <div class="message bot"><p>Bienvenido. Por favor, selecciona un bot de la izquierda para comenzar.</p></div>
+                <div class="welcome-placeholder" id="welcome-placeholder">
+                    <svg viewBox="0 0 24 24" width="80" height="80" fill="var(--text-secondary)"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2.5 11.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path></svg>
+                    <p>Selecciona un bot de la izquierda para comenzar a chatear.</p>
+                </div>
             </div>
             <div class="chat-input">
                 <input type="text" id="message-input" placeholder="Escribe un mensaje..." disabled>
-                <button id="send-button" onclick="sendMessage()" disabled>Enviar</button>
+                <button id="send-button" onclick="sendMessage()" disabled title="Enviar mensaje">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
             </div>
         </div>
     </div>
 
     <div class="flow-display-container" id="flow-container">
-        <button class="close-flow-btn" onclick="closeFlow()">X</button>
-        <iframe id="flow-iframe" src="about:blank"></iframe>
+        <div class="flow-content">
+            <div class="flow-header">
+                <span class="flow-title" id="flow-title-display"></span>
+                <button class="close-flow-btn" onclick="closeFlow()" title="Cerrar flow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <iframe id="flow-iframe" src="about:blank"></iframe>
+        </div>
     </div>
 
     <script src="app.js"></script>
+    <script>
+        function toggleApiKeyVisibility() {
+            const apiKeyInput = document.getElementById('gemini-api-key-input');
+            const eyeIcon = document.getElementById('eye-icon');
+            const eyeSlashIcon = document.getElementById('eye-slash-icon');
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                eyeIcon.style.display = 'none';
+                eyeSlashIcon.style.display = 'inline-block';
+            } else {
+                apiKeyInput.type = 'password';
+                eyeIcon.style.display = 'inline-block';
+                eyeSlashIcon.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>

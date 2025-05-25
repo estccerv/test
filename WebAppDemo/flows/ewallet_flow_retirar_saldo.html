@@ -1,28 +1,42 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><title>Flow: Retirar Saldo</title><link rel="stylesheet" href="flow_style.css"></head><body>
-<div class="flow-container">
-    <h2>➖ Retirar Saldo</h2>
-    <form>
-        <div><label for="monto_retirar">Monto a Retirar:</label><input type="number" id="monto_retirar" name="monto_retirar" step="0.01" placeholder="Ej: 20.00" required></div>
-        <div><label for="moneda_retirar">Moneda:</label><input type="text" id="moneda_retirar" name="moneda_retirar" placeholder="Ej: USD"></div>
-        <div><label for="destino_retiro">Cuenta de Destino (simulado):</label><input type="text" id="destino_retiro" name="destino_retiro" placeholder="Ej: Cuenta bancaria XXXX"></div>
-        <div><label for="pincode_retiro">Pincode de Operación:</label><input type="password" id="pincode_retiro" name="pincode_retiro" pattern="\d{4,6}" required></div>
-        <button type="button" onclick="alert('Simulación: Proceder al retiro de saldo.'); closeFlowWindow();">Retirar</button>
-    </form>
-</div>
-<script>
-    function closeFlowWindow() {
-        if (window.parent && typeof window.parent.closeFlow === 'function') {
-            window.parent.closeFlow();
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Retirar Saldo</title>
+    <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Retirar Saldo</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>➖ Retirar Saldo</h2>
+        <form>
+            <div><label for="monto_retirar">Monto a Retirar:</label><input type="number" id="monto_retirar" name="monto_retirar" step="0.01" placeholder="Ej: 20.00" required></div>
+            <div><label for="moneda_retirar">Moneda:</label><input type="text" id="moneda_retirar" name="moneda_retirar" placeholder="Ej: USD"></div>
+            <div><label for="destino_retiro">Cuenta de Destino (simulado):</label><input type="text" id="destino_retiro" name="destino_retiro" placeholder="Ej: Cuenta bancaria XXXX"></div>
+            <div><label for="pincode_retiro">Pincode de Operación:</label><input type="password" id="pincode_retiro" name="pincode_retiro" pattern="\d{4,6}" required></div>
+            <button type="button" onclick="alert('Simulación: Proceder al retiro de saldo.'); closeFlowWindow();">Retirar</button>
+        </form>
+    </div>
+    <script>
+        function closeFlowWindow() {
+            if (window.parent && typeof window.parent.closeFlow === 'function') {
+                window.parent.closeFlow();
+            }
         }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const monto = params.get('monto');
-        const moneda = params.get('moneda');
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const monto = params.get('monto');
+            const moneda = params.get('moneda');
 
-        if (monto) document.getElementById('monto_retirar').value = parseFloat(monto);
-        if (moneda) document.getElementById('moneda_retirar').value = moneda;
-    });
-</script>
-</body></html>
+            if (monto) document.getElementById('monto_retirar').value = parseFloat(monto);
+            if (moneda) document.getElementById('moneda_retirar').value = moneda;
+        });
+    </script>
+</body>
+</html>

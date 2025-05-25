@@ -4,41 +4,48 @@
     <meta charset="UTF-8">
     <title>Flow: Recarga Telefónica</title>
     <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="flow-container">
-    <h2>📱 Recarga Telefónica / Paquete</h2>
-    <form>
-        <div><label for="numero_tel">Número de Teléfono:</label><input type="tel" id="numero_tel" name="numero_tel" placeholder="Ej: 5512345678" required></div>
-        <div><label for="operador_tel">Operador:</label>
-            <select id="operador_tel" name="operador_tel" required>
-                <option value="">Selecciona operador</option>
-                <option value="Telcel">Telcel</option>
-                <option value="Movistar">Movistar</option>
-                <option value="AT&T">AT&T</option>
-                <option value="Claro">Claro</option>
-                <option value="Tigo">Tigo</option>
-                <option value="Otro">Otro</option> <!-- Importante si la NLU devuelve un valor no listado -->
-            </select>
-        </div>
-        <div><label for="tipo_recarga_tel">Tipo de Recarga:</label>
-            <select id="tipo_recarga_tel" name="tipo_recarga_tel" onchange="toggleMontoPaquete(this.value)">
-                <option value="tiempo_aire">Tiempo Aire (Saldo)</option>
-                <option value="paquete">Paquete</option>
-            </select>
-        </div>
-        <div id="monto_tiempo_aire_div">
-            <label for="monto_tel">Monto a Recargar (Tiempo Aire):</label>
-            <input type="number" id="monto_tel" name="monto_tel" step="0.01" placeholder="Ej: 50.00">
-        </div>
-        <div id="nombre_paquete_div" style="display:none;">
-            <label for="nombre_paquete_tel">Nombre o Descripción del Paquete:</label>
-            <input type="text" id="nombre_paquete_tel" name="nombre_paquete_tel" placeholder="Ej: Amigo Sin Límite 100">
-        </div>
-        <div><label for="moneda_tel">Moneda:</label><input type="text" id="moneda_tel" name="moneda_tel" value="MXN"></div>
-        <button type="button" onclick="alert('Simulación: Procesando recarga telefónica.'); closeFlowWindow();">Recargar / Comprar</button>
-    </form>
-</div>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Recarga Telefónica</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>📱 Recarga Telefónica / Paquete</h2>
+        <form>
+            <div><label for="numero_tel">Número de Teléfono:</label><input type="tel" id="numero_tel" name="numero_tel" placeholder="Ej: 5512345678" required></div>
+            <div><label for="operador_tel">Operador:</label>
+                <select id="operador_tel" name="operador_tel" required>
+                    <option value="">Selecciona operador</option>
+                    <option value="Telcel">Telcel</option>
+                    <option value="Movistar">Movistar</option>
+                    <option value="AT&T">AT&T</option>
+                    <option value="Claro">Claro</option>
+                    <option value="Tigo">Tigo</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div><label for="tipo_recarga_tel">Tipo de Recarga:</label>
+                <select id="tipo_recarga_tel" name="tipo_recarga_tel" onchange="toggleMontoPaquete(this.value)">
+                    <option value="tiempo_aire">Tiempo Aire (Saldo)</option>
+                    <option value="paquete">Paquete</option>
+                </select>
+            </div>
+            <div id="monto_tiempo_aire_div">
+                <label for="monto_tel">Monto a Recargar (Tiempo Aire):</label>
+                <input type="number" id="monto_tel" name="monto_tel" step="0.01" placeholder="Ej: 50.00">
+            </div>
+            <div id="nombre_paquete_div" style="display:none;">
+                <label for="nombre_paquete_tel">Nombre o Descripción del Paquete:</label>
+                <input type="text" id="nombre_paquete_tel" name="nombre_paquete_tel" placeholder="Ej: Amigo Sin Límite 100">
+            </div>
+            <div><label for="moneda_tel">Moneda:</label><input type="text" id="moneda_tel" name="moneda_tel" value="MXN"></div>
+            <button type="button" onclick="alert('Simulación: Procesando recarga telefónica.'); closeFlowWindow();">Recargar / Comprar</button>
+        </form>
+    </div>
 <script>
     function closeFlowWindow() {
         if (window.parent && typeof window.parent.closeFlow === 'function') {
@@ -56,9 +63,11 @@
             montoInput.required = true;
             paqueteDiv.style.display = 'none';
             paqueteInput.required = false;
+            paqueteInput.value = ''; // Limpiar el campo de paquete
         } else if (tipo === 'paquete') {
             montoDiv.style.display = 'none';
             montoInput.required = false;
+            montoInput.value = ''; // Limpiar el campo de monto
             paqueteDiv.style.display = 'block';
             paqueteInput.required = true;
         } else {
@@ -66,6 +75,7 @@
             montoInput.required = true;
             paqueteDiv.style.display = 'none';
             paqueteInput.required = false;
+            paqueteInput.value = '';
         }
     }
 
@@ -76,30 +86,41 @@
         const monto = params.get('monto');
         const nombre_paquete = params.get('nombre_paquete');
         const moneda = params.get('moneda');
-        // La NLU podría darnos una pista sobre si es paquete o tiempo aire
-        const intencion = params.get('intencion'); // Suponiendo que app.js pasa la intención
+        const intencion = params.get('intencion'); // Para ayudar a decidir si es paquete o tiempo aire
 
         if (numero_telefono) document.getElementById('numero_tel').value = numero_telefono;
         if (operador_telefono) {
             const operadorSelect = document.getElementById('operador_tel');
-            const optionExists = Array.from(operadorSelect.options).some(opt => opt.value === operador_telefono);
+            const optionExists = Array.from(operadorSelect.options).some(opt => opt.value.toLowerCase() === operador_telefono.toLowerCase());
             if (optionExists) {
-                operadorSelect.value = operador_telefono;
+                operadorSelect.value = Array.from(operadorSelect.options).find(opt => opt.value.toLowerCase() === operador_telefono.toLowerCase()).value;
             } else {
-                 // Si el operador no está en la lista, podríamos seleccionar 'Otro' o añadirlo dinámicamente
-                 // Por ahora, lo dejamos o se puede seleccionar 'Otro' si la lógica de NLU lo sugiere
-                console.warn('Operador '+operador_telefono+' no en lista. Selecciona manualmente o actualiza la lista.');
+                // Si no está en la lista explícita pero es un operador conocido por la NLU, intentar seleccionar 'Otro'
+                // o si la NLU manda 'Otro' directamente
+                if (operador_telefono.toLowerCase() === 'otro' || params.has('operador_telefono')) { 
+                  operadorSelect.value = 'Otro'; 
+                }
+                console.warn('Operador '+operador_telefono+' no en lista. Considera añadirlo o selecciona 'Otro'.');
             }
         }
         if (moneda) document.getElementById('moneda_tel').value = moneda;
+        else document.getElementById('moneda_tel').value = "MXN"; // Default a MXN si no se especifica
 
         const tipoRecargaSelect = document.getElementById('tipo_recarga_tel');
+        // Dar prioridad a nombre_paquete o intencion de comprar paquete
         if (nombre_paquete || intencion === 'comprar_paquete_movil') {
             tipoRecargaSelect.value = 'paquete';
             if (nombre_paquete) document.getElementById('nombre_paquete_tel').value = nombre_paquete;
-        } else {
+            if (monto) { // Si se detecta paquete pero también hay un monto, podría ser el precio del paquete
+                console.log("Monto detectado con paquete: " + monto + " (podría ser el precio del paquete)");
+                // No se asigna a monto_tel porque ese es para tiempo aire
+            }
+        } else if (monto) { // Si hay monto y no es paquete, es tiempo aire
             tipoRecargaSelect.value = 'tiempo_aire';
-            if (monto) document.getElementById('monto_tel').value = parseFloat(monto);
+            document.getElementById('monto_tel').value = parseFloat(monto);
+        } else {
+            // Default a tiempo aire si no hay información clara
+            tipoRecargaSelect.value = 'tiempo_aire';
         }
         toggleMontoPaquete(tipoRecargaSelect.value); // Asegurar que se muestre el campo correcto
     });

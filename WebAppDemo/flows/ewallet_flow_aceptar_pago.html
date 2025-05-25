@@ -1,33 +1,47 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><title>Flow: Aceptar Pago</title><link rel="stylesheet" href="flow_style.css"></head><body>
-<div class="flow-container">
-    <h2>👍 Confirmar Pago</h2>
-    <div class="payment-details">
-        <p>Estás a punto de pagar:</p>
-        <h3><span id="monto_aceptar">25.00</span> <span id="moneda_aceptar">USD</span></h3>
-        <p>A: <strong id="beneficiario_aceptar">Ana G.</strong></p>
-        <p>Concepto: <em id="concepto_aceptar">Almuerzo compartido</em></p>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Aceptar Pago</title>
+    <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Aceptar Pago</div>
     </div>
-    <form>
-        <div><label for="pincode_aceptar">Pincode de Operación:</label><input type="password" id="pincode_aceptar" name="pincode_aceptar" pattern="\d{4,6}" required></div>
-        <button type="button" onclick="alert('Simulación: Pago confirmado y procesado.'); closeFlowWindow();">Confirmar y Pagar</button>
-        <button type="button" class="secondary" onclick="alert('Simulación: Pago cancelado.'); closeFlowWindow();">Cancelar</button>
-    </form>
-</div>
-<script>
-    function closeFlowWindow() {
-        if (window.parent && typeof window.parent.closeFlow === 'function') {
-            window.parent.closeFlow();
+    <div class="flow-container main-content"> <!-- main-content class added for potential padding adjustment -->
+        <h2>👍 Confirmar Pago</h2>
+        <div class="payment-details">
+            <p>Estás a punto de pagar:</p>
+            <h3><span id="monto_aceptar">25.00</span> <span id="moneda_aceptar">USD</span></h3>
+            <p>A: <strong id="beneficiario_aceptar">Ana G.</strong></p>
+            <p>Concepto: <em id="concepto_aceptar">Almuerzo compartido</em></p>
+        </div>
+        <form>
+            <div><label for="pincode_aceptar">Pincode de Operación:</label><input type="password" id="pincode_aceptar" name="pincode_aceptar" pattern="\d{4,6}" required></div>
+            <button type="button" onclick="alert('Simulación: Pago confirmado y procesado.'); closeFlowWindow();">Confirmar y Pagar</button>
+            <button type="button" class="secondary" onclick="alert('Simulación: Pago cancelado.'); closeFlowWindow();">Cancelar</button>
+        </form>
+    </div>
+    <script>
+        function closeFlowWindow() {
+            if (window.parent && typeof window.parent.closeFlow === 'function') {
+                window.parent.closeFlow();
+            }
         }
-    }
-    // En una implementación real, los datos (monto, beneficiario, concepto)
-    // se cargarían dinámicamente basados en el contexto de la transacción a aceptar.
-    // Para este demo, son estáticos en el HTML o podrían pasarse por URL si la NLU los capturara.
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        // Ejemplo si la NLU capturara algo como un ID de transacción para buscar los detalles
-        // const transactionId = params.get('transactionId');
-        // if (transactionId) { /* Lógica para cargar detalles de la transacción */ }
-    });
-</script>
-</body></html>
+        // En una implementación real, los datos (monto, beneficiario, concepto)
+        // se cargarían dinámicamente basados en el contexto de la transacción a aceptar.
+        // Para este demo, son estáticos en el HTML o podrían pasarse por URL si la NLU los capturara.
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            // Ejemplo si la NLU capturara algo como un ID de transacción para buscar los detalles
+            // const transactionId = params.get('transactionId');
+            // if (transactionId) { /* Lógica para cargar detalles de la transacción */ }
+        });
+    </script>
+</body>
+</html>

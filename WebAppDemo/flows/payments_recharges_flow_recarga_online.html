@@ -4,29 +4,36 @@
     <meta charset="UTF-8">
     <title>Flow: Recarga Servicio Online / Juego</title>
     <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="flow-container">
-    <h2>💻 Recarga Servicio Online / Juego</h2>
-    <form>
-        <div><label for="nombre_servicio_juego">Nombre del Servicio o Juego:</label>
-            <input type="text" id="nombre_servicio_juego" name="nombre_servicio_juego" placeholder="Ej: Netflix, Free Fire" required>
-        </div>
-        <div><label for="tipo_item_juego">Tipo de Ítem (si es juego, ej: diamantes, monedas) o "Saldo":</label>
-            <input type="text" id="tipo_item_juego" name="tipo_item_juego" placeholder="Ej: Diamantes, Saldo">
-        </div>
-        <div><label for="cantidad_monto_online">Cantidad de Ítems o Monto de Saldo:</label>
-            <input type="number" id="cantidad_monto_online" name="cantidad_monto_online" step="1" placeholder="Ej: 100 (ítems) o 10 (saldo)" required>
-        </div>
-        <div><label for="id_usuario_online">ID de Usuario / Correo del Servicio/Juego (opcional):</label>
-            <input type="text" id="id_usuario_online" name="id_usuario_online" placeholder="Ej: usuario123 o correo@ejemplo.com">
-        </div>
-        <div><label for="moneda_online">Moneda (si es monto de saldo):</label>
-            <input type="text" id="moneda_online" name="moneda_online">
-        </div>
-        <button type="button" onclick="alert('Simulación: Procesando recarga de servicio online.'); closeFlowWindow();">Recargar</button>
-    </form>
-</div>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Recarga Online</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>💻 Recarga Servicio Online / Juego</h2>
+        <form>
+            <div><label for="nombre_servicio_juego">Nombre del Servicio o Juego:</label>
+                <input type="text" id="nombre_servicio_juego" name="nombre_servicio_juego" placeholder="Ej: Netflix, Free Fire" required>
+            </div>
+            <div><label for="tipo_item_juego">Tipo de Ítem (si es juego, ej: diamantes, monedas) o "Saldo":</label>
+                <input type="text" id="tipo_item_juego" name="tipo_item_juego" placeholder="Ej: Diamantes, Saldo">
+            </div>
+            <div><label for="cantidad_monto_online">Cantidad de Ítems o Monto de Saldo:</label>
+                <input type="number" id="cantidad_monto_online" name="cantidad_monto_online" step="1" placeholder="Ej: 100 (ítems) o 10 (saldo)" required>
+            </div>
+            <div><label for="id_usuario_online">ID de Usuario / Correo del Servicio/Juego (opcional):</label>
+                <input type="text" id="id_usuario_online" name="id_usuario_online" placeholder="Ej: usuario123 o correo@ejemplo.com">
+            </div>
+            <div><label for="moneda_online">Moneda (si es monto de saldo):</label>
+                <input type="text" id="moneda_online" name="moneda_online">
+            </div>
+            <button type="button" onclick="alert('Simulación: Procesando recarga de servicio online.'); closeFlowWindow();">Recargar</button>
+        </form>
+    </div>
 <script>
     function closeFlowWindow() {
         if (window.parent && typeof window.parent.closeFlow === 'function') {
@@ -38,21 +45,27 @@
         const nombre_servicio_online = params.get('nombre_servicio_online');
         const nombre_juego = params.get('nombre_juego');
         const tipo_item_juego = params.get('tipo_item_juego');
-        const cantidad_item_juego = params.get('cantidad_item_juego');
-        const id_usuario_juego = params.get('id_usuario_juego');
-        const monto = params.get('monto');
+        const cantidad_item_juego = params.get('cantidad_item_juego'); // Generalmente para items de juegos
+        const id_usuario_juego = params.get('id_usuario_juego'); // ID de usuario en el juego o servicio
+        const monto = params.get('monto'); // Monto para recargas de saldo
         const moneda = params.get('moneda');
 
         if (nombre_servicio_online) document.getElementById('nombre_servicio_juego').value = nombre_servicio_online;
         else if (nombre_juego) document.getElementById('nombre_servicio_juego').value = nombre_juego;
 
         if (tipo_item_juego) document.getElementById('tipo_item_juego').value = tipo_item_juego;
-        else if (monto && !tipo_item_juego) document.getElementById('tipo_item_juego').value = "Saldo";
+        else if (monto && !tipo_item_juego) {
+             document.getElementById('tipo_item_juego').value = "Saldo"; // Si hay monto y no tipo_item, asumimos que es recarga de saldo
+        }
 
         if (cantidad_item_juego) document.getElementById('cantidad_monto_online').value = parseInt(cantidad_item_juego);
         else if (monto) document.getElementById('cantidad_monto_online').value = parseFloat(monto);
         
         if (id_usuario_juego) document.getElementById('id_usuario_online').value = id_usuario_juego;
+        // Si la NLU extrae un id_usuario_servicio genérico, también podría usarse para id_usuario_online
+        const id_usuario_servicio = params.get('id_usuario_servicio');
+        if (id_usuario_servicio && !id_usuario_juego) document.getElementById('id_usuario_online').value = id_usuario_servicio;
+
         if (moneda) document.getElementById('moneda_online').value = moneda;
     });
 </script>

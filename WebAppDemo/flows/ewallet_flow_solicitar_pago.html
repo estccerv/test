@@ -1,32 +1,46 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><title>Flow: Solicitar Pago</title><link rel="stylesheet" href="flow_style.css"></head><body>
-<div class="flow-container">
-    <h2>🪙 Solicitar Pago</h2>
-    <form>
-        <div><label for="deudor_solicitud">Solicitar a (Nombre o Teléfono):</label><input type="text" id="deudor_solicitud" name="deudor_solicitud" placeholder="Ej: Carlos M. o +987654321" required></div>
-        <div><label for="monto_solicitud">Monto:</label><input type="number" id="monto_solicitud" name="monto_solicitud" step="0.01" placeholder="Ej: 10.00" required></div>
-        <div><label for="moneda_solicitud">Moneda:</label><input type="text" id="moneda_solicitud" name="moneda_solicitud" placeholder="Ej: USD"></div>
-        <div><label for="concepto_solicitud">Concepto (opcional):</label><input type="text" id="concepto_solicitud" name="concepto_solicitud" placeholder="Ej: Cuota de pizza"></div>
-        <button type="button" onclick="alert('Simulación: Enviar solicitud de pago.'); closeFlowWindow();">Solicitar</button>
-    </form>
-</div>
-<script>
-    function closeFlowWindow() {
-        if (window.parent && typeof window.parent.closeFlow === 'function') {
-            window.parent.closeFlow();
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Solicitar Pago</title>
+    <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Solicitar Pago</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>🪙 Solicitar Pago</h2>
+        <form>
+            <div><label for="deudor_solicitud">Solicitar a (Nombre o Teléfono):</label><input type="text" id="deudor_solicitud" name="deudor_solicitud" placeholder="Ej: Carlos M. o +987654321" required></div>
+            <div><label for="monto_solicitud">Monto:</label><input type="number" id="monto_solicitud" name="monto_solicitud" step="0.01" placeholder="Ej: 10.00" required></div>
+            <div><label for="moneda_solicitud">Moneda:</label><input type="text" id="moneda_solicitud" name="moneda_solicitud" placeholder="Ej: USD"></div>
+            <div><label for="concepto_solicitud">Concepto (opcional):</label><input type="text" id="concepto_solicitud" name="concepto_solicitud" placeholder="Ej: Cuota de pizza"></div>
+            <button type="button" onclick="alert('Simulación: Enviar solicitud de pago.'); closeFlowWindow();">Solicitar</button>
+        </form>
+    </div>
+    <script>
+        function closeFlowWindow() {
+            if (window.parent && typeof window.parent.closeFlow === 'function') {
+                window.parent.closeFlow();
+            }
         }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const deudor = params.get('deudor');
-        const monto = params.get('monto');
-        const moneda = params.get('moneda');
-        const concepto = params.get('concepto');
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const deudor = params.get('deudor');
+            const monto = params.get('monto');
+            const moneda = params.get('moneda');
+            const concepto = params.get('concepto');
 
-        if (deudor) document.getElementById('deudor_solicitud').value = deudor;
-        if (monto) document.getElementById('monto_solicitud').value = parseFloat(monto);
-        if (moneda) document.getElementById('moneda_solicitud').value = moneda;
-        if (concepto) document.getElementById('concepto_solicitud').value = concepto;
-    });
-</script>
-</body></html>
+            if (deudor) document.getElementById('deudor_solicitud').value = deudor;
+            if (monto) document.getElementById('monto_solicitud').value = parseFloat(monto);
+            if (moneda) document.getElementById('moneda_solicitud').value = moneda;
+            if (concepto) document.getElementById('concepto_solicitud').value = concepto;
+        });
+    </script>
+</body>
+</html>

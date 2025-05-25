@@ -1,28 +1,42 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><title>Flow: Crear Cuenta</title><link rel="stylesheet" href="flow_style.css"></head><body>
-<div class="flow-container">
-    <h2>🏦 Crear Nueva Cuenta de Billetera</h2>
-    <form>
-        <div><label for="nombre_usuario">Nombre (opcional):</label><input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Ej: Juan Perez"></div>
-        <div><label for="pincode">Define tu Pincode (4-6 dígitos):</label><input type="password" id="pincode" name="pincode" pattern="\d{4,6}" required placeholder="Ej: 1234"></div>
-        <div><label for="confirm_pincode">Confirma tu Pincode:</label><input type="password" id="confirm_pincode" name="confirm_pincode" pattern="\d{4,6}" required placeholder="Repite el Pincode"></div>
-        <button type="button" onclick="alert('Simulación: Datos enviados para crear cuenta.'); closeFlowWindow();">Crear Cuenta</button>
-    </form>
-</div>
-<script>
-    function closeFlowWindow() {
-        if (window.parent && typeof window.parent.closeFlow === 'function') {
-            window.parent.closeFlow();
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Crear Cuenta</title>
+    <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Crear Cuenta</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>🏦 Crear Nueva Cuenta de Billetera</h2>
+        <form>
+            <div><label for="nombre_usuario">Nombre (opcional):</label><input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Ej: Juan Perez"></div>
+            <div><label for="pincode">Define tu Pincode (4-6 dígitos):</label><input type="password" id="pincode" name="pincode" pattern="\d{4,6}" required placeholder="Ej: 1234"></div>
+            <div><label for="confirm_pincode">Confirma tu Pincode:</label><input type="password" id="confirm_pincode" name="confirm_pincode" pattern="\d{4,6}" required placeholder="Repite el Pincode"></div>
+            <button type="button" onclick="alert('Simulación: Datos enviados para crear cuenta.'); closeFlowWindow();">Crear Cuenta</button>
+        </form>
+    </div>
+    <script>
+        function closeFlowWindow() {
+            if (window.parent && typeof window.parent.closeFlow === 'function') {
+                window.parent.closeFlow();
+            }
         }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const nombre_usuario = params.get('nombre_usuario');
-        const pincode = params.get('pincode');
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const nombre_usuario = params.get('nombre_usuario');
+            const pincode = params.get('pincode');
 
-        if (nombre_usuario) document.getElementById('nombre_usuario').value = nombre_usuario;
-        if (pincode) document.getElementById('pincode').value = pincode; 
-        // No pre-llenamos confirm_pincode por seguridad/lógica de UI
-    });
-</script>
-</body></html>
+            if (nombre_usuario) document.getElementById('nombre_usuario').value = nombre_usuario;
+            if (pincode) document.getElementById('pincode').value = pincode; 
+            // No pre-llenamos confirm_pincode por seguridad/lógica de UI
+        });
+    </script>
+</body>
+</html>

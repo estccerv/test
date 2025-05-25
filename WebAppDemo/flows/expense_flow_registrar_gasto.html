@@ -7,7 +7,13 @@
     <link rel="stylesheet" href="flow_style.css">
 </head>
 <body>
-    <div class="flow-container">
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Registrar Gasto</div>
+    </div>
+    <div class="flow-container main-content">
         <h2>💸 Registrar Nuevo Gasto</h2>
         <form id="expenseForm">
             <div>
@@ -79,6 +85,13 @@
                 }
             }
             // Formatear a YYYY-MM-DD para el input type="date"
+            const year = targetDate.getFullYear();
+            const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+            const day = String(targetDate.getDate()).padStart(2, '0');
+            document.getElementById('date').value = `${year}-${month}-${day}`;
+        } else {
+            // Si no se pasa date_reference, establecer la fecha de hoy por defecto
+            let targetDate = new Date();
             const year = targetDate.getFullYear();
             const month = String(targetDate.getMonth() + 1).padStart(2, '0');
             const day = String(targetDate.getDate()).padStart(2, '0');

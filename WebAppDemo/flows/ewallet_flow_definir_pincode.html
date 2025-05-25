@@ -1,25 +1,39 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><title>Flow: Definir Pincode</title><link rel="stylesheet" href="flow_style.css"></head><body>
-<div class="flow-container">
-    <h2>🔑 Definir Pincode</h2>
-    <form>
-        <div><label for="pincode_actual">Pincode Actual (si ya tienes uno):</label><input type="password" id="pincode_actual" name="pincode_actual" pattern="\d{4,6}"></div>
-        <div><label for="nuevo_pincode">Nuevo Pincode (4-6 dígitos):</label><input type="password" id="nuevo_pincode" name="nuevo_pincode" pattern="\d{4,6}" required></div>
-        <div><label for="confirm_nuevo_pincode">Confirma Nuevo Pincode:</label><input type="password" id="confirm_nuevo_pincode" name="confirm_nuevo_pincode" pattern="\d{4,6}" required></div>
-        <button type="button" onclick="alert('Simulación: Pincode actualizado.'); closeFlowWindow();">Guardar Pincode</button>
-    </form>
-</div>
-<script>
-    function closeFlowWindow() {
-        if (window.parent && typeof window.parent.closeFlow === 'function') {
-            window.parent.closeFlow();
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Definir Pincode</title>
+    <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Definir Pincode</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>🔑 Definir Pincode</h2>
+        <form>
+            <div><label for="pincode_actual">Pincode Actual (si ya tienes uno):</label><input type="password" id="pincode_actual" name="pincode_actual" pattern="\d{4,6}"></div>
+            <div><label for="nuevo_pincode">Nuevo Pincode (4-6 dígitos):</label><input type="password" id="nuevo_pincode" name="nuevo_pincode" pattern="\d{4,6}" required></div>
+            <div><label for="confirm_nuevo_pincode">Confirma Nuevo Pincode:</label><input type="password" id="confirm_nuevo_pincode" name="confirm_nuevo_pincode" pattern="\d{4,6}" required></div>
+            <button type="button" onclick="alert('Simulación: Pincode actualizado.'); closeFlowWindow();">Guardar Pincode</button>
+        </form>
+    </div>
+    <script>
+        function closeFlowWindow() {
+            if (window.parent && typeof window.parent.closeFlow === 'function') {
+                window.parent.closeFlow();
+            }
         }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const pincode = params.get('pincode'); // Podría ser 'nuevo_pincode' según NLU
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const pincode = params.get('pincode'); // Podría ser 'nuevo_pincode' según NLU
 
-        if (pincode) document.getElementById('nuevo_pincode').value = pincode;
-    });
-</script>
-</body></html>
+            if (pincode) document.getElementById('nuevo_pincode').value = pincode;
+        });
+    </script>
+</body>
+</html>

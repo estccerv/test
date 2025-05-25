@@ -1,33 +1,47 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><title>Flow: Transferir Dinero</title><link rel="stylesheet" href="flow_style.css"></head><body>
-<div class="flow-container">
-    <h2>💸 Transferir Dinero</h2>
-    <form>
-        <div><label for="destinatario_transfer">Destinatario (Nombre o Teléfono):</label><input type="text" id="destinatario_transfer" name="destinatario_transfer" placeholder="Ej: Ana G. o +123456789" required></div>
-        <div><label for="monto_transfer">Monto:</label><input type="number" id="monto_transfer" name="monto_transfer" step="0.01" placeholder="Ej: 15.50" required></div>
-        <div><label for="moneda_transfer">Moneda:</label><input type="text" id="moneda_transfer" name="moneda_transfer" placeholder="Ej: USD"></div>
-        <div><label for="concepto_transfer">Concepto (opcional):</label><input type="text" id="concepto_transfer" name="concepto_transfer" placeholder="Ej: Regalo de cumpleaños"></div>
-        <div><label for="pincode_transfer">Pincode de Operación:</label><input type="password" id="pincode_transfer" name="pincode_transfer" pattern="\d{4,6}" required></div>
-        <button type="button" onclick="alert('Simulación: Confirmar transferencia.'); closeFlowWindow();">Enviar Dinero</button>
-    </form>
-</div>
-<script>
-    function closeFlowWindow() {
-        if (window.parent && typeof window.parent.closeFlow === 'function') {
-            window.parent.closeFlow();
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow: Transferir Dinero</title>
+    <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Transferir Dinero</div>
+    </div>
+    <div class="flow-container main-content">
+        <h2>💸 Transferir Dinero</h2>
+        <form>
+            <div><label for="destinatario_transfer">Destinatario (Nombre o Teléfono):</label><input type="text" id="destinatario_transfer" name="destinatario_transfer" placeholder="Ej: Ana G. o +123456789" required></div>
+            <div><label for="monto_transfer">Monto:</label><input type="number" id="monto_transfer" name="monto_transfer" step="0.01" placeholder="Ej: 15.50" required></div>
+            <div><label for="moneda_transfer">Moneda:</label><input type="text" id="moneda_transfer" name="moneda_transfer" placeholder="Ej: USD"></div>
+            <div><label for="concepto_transfer">Concepto (opcional):</label><input type="text" id="concepto_transfer" name="concepto_transfer" placeholder="Ej: Regalo de cumpleaños"></div>
+            <div><label for="pincode_transfer">Pincode de Operación:</label><input type="password" id="pincode_transfer" name="pincode_transfer" pattern="\d{4,6}" required></div>
+            <button type="button" onclick="alert('Simulación: Confirmar transferencia.'); closeFlowWindow();">Enviar Dinero</button>
+        </form>
+    </div>
+    <script>
+        function closeFlowWindow() {
+            if (window.parent && typeof window.parent.closeFlow === 'function') {
+                window.parent.closeFlow();
+            }
         }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const destinatario = params.get('destinatario');
-        const monto = params.get('monto');
-        const moneda = params.get('moneda');
-        const concepto = params.get('concepto');
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const destinatario = params.get('destinatario');
+            const monto = params.get('monto');
+            const moneda = params.get('moneda');
+            const concepto = params.get('concepto');
 
-        if (destinatario) document.getElementById('destinatario_transfer').value = destinatario;
-        if (monto) document.getElementById('monto_transfer').value = parseFloat(monto);
-        if (moneda) document.getElementById('moneda_transfer').value = moneda;
-        if (concepto) document.getElementById('concepto_transfer').value = concepto;
-    });
-</script>
-</body></html>
+            if (destinatario) document.getElementById('destinatario_transfer').value = destinatario;
+            if (monto) document.getElementById('monto_transfer').value = parseFloat(monto);
+            if (moneda) document.getElementById('moneda_transfer').value = moneda;
+            if (concepto) document.getElementById('concepto_transfer').value = concepto;
+        });
+    </script>
+</body>
+</html>

@@ -4,37 +4,49 @@
     <meta charset="UTF-8">
     <title>Flow: Ver Saldo</title>
     <link rel="stylesheet" href="flow_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="flow-container">
-    <h2>💰 Tu Saldo Actual</h2>
-    <div class="saldo-display">
-        <p>Saldo Disponible:</p>
-        <h3 id="display_saldo_valor">Cargando...</h3> 
-        <p><small>(Este es tu saldo actual simulado)</small></p>
+    <div class="wa-flow-header">
+        <button class="wa-flow-back-button" onclick="if (window.parent && typeof window.parent.closeFlow === 'function') { window.parent.closeFlow(); } else { window.history.back(); }">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="wa-flow-title">Ver Saldo</div>
     </div>
-    <button type="button" onclick="closeFlowWindow();">Ok</button>
-</div>
-<script>
-    function closeFlowWindow() {
-        if (window.parent && typeof window.parent.closeFlow === 'function') {
-            window.parent.closeFlow();
+    <div class="flow-container main-content">
+        <h2>💰 Tu Saldo Actual</h2>
+        <div class="saldo-display">
+            <p>Saldo Disponible:</p>
+            <h3 id="display_saldo_valor">Cargando...</h3> 
+            <p><small>(Este es tu saldo actual simulado)</small></p>
+        </div>
+        <button type="button" onclick="closeFlowWindow();">Ok</button>
+    </div>
+    <script>
+        function closeFlowWindow() {
+            if (window.parent && typeof window.parent.closeFlow === 'function') {
+                window.parent.closeFlow();
+            }
         }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const saldo = params.get('saldo');
-        const moneda = params.get('moneda');
-        const saldoDisplay = document.getElementById('display_saldo_valor');
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const saldo = params.get('saldo');
+            const moneda = params.get('moneda');
+            const saldoDisplay = document.getElementById('display_saldo_valor');
 
-        if (saldo && moneda) {
-            saldoDisplay.textContent = `${parseFloat(saldo).toFixed(2)} ${moneda}`;
-        } else if (saldo) {
-            saldoDisplay.textContent = `${parseFloat(saldo).toFixed(2)} (Moneda no especificada)`;
-        } else {
-            saldoDisplay.textContent = "No disponible";
-        }
-    });
-</script>
+            if (saldo && moneda) {
+                saldoDisplay.textContent = `${parseFloat(saldo).toFixed(2)} ${moneda}`;
+            } else if (saldo) {
+                saldoDisplay.textContent = `${parseFloat(saldo).toFixed(2)} (Moneda no especificada)`;
+            } else {
+                // Simulamos un saldo si no viene por parámetros para el demo
+                // En un caso real, aquí se haría una llamada a la API o se mostraría un error
+                const demoSaldo = "123.45";
+                const demoMoneda = "USD";
+                saldoDisplay.textContent = `${parseFloat(demoSaldo).toFixed(2)} ${demoMoneda}`;
+                // saldoDisplay.textContent = "No disponible"; // Opción si no se simula
+            }
+        });
+    </script>
 </body>
 </html>
