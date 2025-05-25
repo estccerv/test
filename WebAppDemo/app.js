@@ -1,4 +1,4 @@
-console.log('app.js: Script inicializado');
+console.log('Script inicializado');
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('app.js: DOMContentLoaded');
